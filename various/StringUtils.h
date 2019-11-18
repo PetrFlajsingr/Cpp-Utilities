@@ -438,6 +438,8 @@ template<typename StringType>
 StringDecorator<StringType>
 operator+(const typename StringDecorator<StringType>::CharT lhs, const StringDecorator<StringType> &rhs);
 
+// TODO: operators
+
 #include "StringUtils.tpp"
 
 #endif //UTILITIES_STRINGUTILS_H

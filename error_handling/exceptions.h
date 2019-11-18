@@ -16,7 +16,6 @@ public:
                std::experimental::source_location srcLoc =
                    std::experimental::source_location::current());
   [[nodiscard]] const char *what() const noexcept override;
-
 protected:
   std::string what_;
 };

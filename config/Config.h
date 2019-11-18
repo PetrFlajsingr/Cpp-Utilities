@@ -10,14 +10,22 @@
 #include "ConfigLoader.h"
 #include <optional>
 
+/*
+ * Usage:
+ * Specialize ConfigContainerTraits for your container
+ * Specialize ConfigLoader for your container
+ * Specialize ConfigSaver for your container (if you want to allow saving)
+ *
+ * template <bool ReadOnly>
+ * using MyContainerConfig = Config<MyContainer, ReadOnly>
+ */
+
 template<typename Container>
 struct ConfigContainerTraits {
     template<typename T, typename Key>
     static std::optional<T> find(Container &, const Key &value);
-
     template<typename T, typename Key>
     static bool contains(Container &, const Key &value);
-
     template<typename T, typename Key>
     static void set(Container &, const Key &key, T &&value);
 };
@@ -37,44 +45,43 @@ template<typename DataContainer, bool ReadOnly,
 class Config {
     using container_traits = ConfigContainerTraits<DataContainer>;
 public:
-    explicit Config(std::string_view path) : path(std::string(path)) {
-        reload();
-    }
-
+    /**
+     * Load config from given path.
+     */
+    explicit Config(std::string_view path);
+    /**
+     * Get value by key, return std::nullopt for non-existent value.
+     * @tparam T requested value type
+     */
     template<typename T>
-    std::optional<T> get(const Key &key) {
-        return container_traits::template find<T>(data, key);
-    }
-
+    std::optional<T> get(const Key &key);
+    /**
+     * Get value by key, return defaultValue for non-existent value.
+     * @tparam T requested value type
+     */
     template<typename T>
-    T getDefault(const Key &key, const T &defaultValue) {
-        if (auto found = get<T>(key); found.has_value()) {
-            return found.value();
-        }
-        return defaultValue;
-    }
-
+    T getDefault(const Key &key, const T &defaultValue);
+    /**
+     * Set value for key. Allowed only if config is not in ReadOnly mode.
+     */
     template<typename T, typename = std::enable_if_t<!ReadOnly>>
-    Config &set(const Key &key, const T &value) {
-        container_traits::set(data, key, value);
-        return *this;
-    }
-
+    Config &set(const Key &key, const T &value);
+    /**
+     * Save config to file. Allowed only if config is not in ReadOnly mode.
+     */
     template<typename = std::enable_if_t<!ReadOnly>>
-    void save() {
-        ConfigSaver<DataContainer> saver;
-        saver.save(data, path);
-    }
-
-    void reload() {
-        ConfigLoader<DataContainer> loader;
-        data = loader.load(path);
-    }
+    void save();
+    /**
+     * Reload config data from disk.
+     */
+    void reload();
 
 private:
     DataContainer data;
     std::string path;
 };
+
+#include "config.tpp"
 
 
 #endif //UTILITIES_CONFIG_H

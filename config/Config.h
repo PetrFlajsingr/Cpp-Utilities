@@ -22,6 +22,16 @@ struct ConfigContainerTraits {
     static void set(Container &, const Key &key, T &&value);
 };
 
+template <typename Container>
+struct ConfigLoader {
+    Container load(std::string_view path);
+};
+
+template <typename Container>
+struct ConfigSaver {
+    void save(Container &config, std::string_view path);
+};
+
 template<typename DataContainer, bool ReadOnly,
         typename Key = std::string>
 class Config {

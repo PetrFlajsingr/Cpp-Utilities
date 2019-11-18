@@ -24,6 +24,6 @@ private:
 template<typename T>
 std::ostream &operator<<(std::ostream &stream, Lazy<T> &other);
 
-#include "lazy.tpp"
+#include "Lazy.tpp"
 
 #endif // LAZY_H

@@ -80,7 +80,7 @@ private:
     std::string path;
 };
 
-#include "config.tpp"
+#include "Config.tpp"
 
 
 #endif //UTILITIES_CONFIG_H

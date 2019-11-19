@@ -7,6 +7,7 @@
 
 
 #include <ostream>
+#include <fmt/format.h>
 
 namespace StringUtils {
     template<template<class> typename ContainerOut = std::vector, typename StringType>
@@ -426,6 +427,15 @@ public:
 
     inline const StringType &string() const;
 
+    template<typename... Args>
+    constexpr inline StringDecorator format(Args &&... args);
+
+    template<typename... Args>
+    constexpr static inline StringDecorator Format(const StringType &str, Args &&... args);
+
+    template<typename... Args>
+    constexpr static inline StringDecorator Format(const StringDecorator &str, Args &&... args);
+
 private:
     StringType _data;
 };
@@ -442,7 +452,7 @@ operator+(const typename StringDecorator<StringType>::CharT *lhs, const StringDe
 
 template<typename StringType>
 StringDecorator<StringType>
-operator+(const typename StringDecorator<StringType>::CharT lhs, const StringDecorator<StringType> &rhs);
+operator+(typename StringDecorator<StringType>::CharT lhs, const StringDecorator<StringType> &rhs);
 
 // TODO: operators
 

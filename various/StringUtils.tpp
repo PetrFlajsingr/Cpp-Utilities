@@ -848,6 +848,24 @@ const StringType &StringDecorator<StringType>::string() const {
 }
 
 template<typename StringType>
+template<typename... Args>
+constexpr StringDecorator<StringType> StringDecorator<StringType>::format(Args &&... args) {
+    return StringDecorator{fmt::format(_data, args...)};
+}
+
+template<typename StringType>
+template<typename... Args>
+constexpr StringDecorator<StringType> StringDecorator<StringType>::Format(const StringType &str, Args &&... args) {
+    return StringDecorator{fmt::format(str, args...)};
+}
+
+template<typename StringType>
+template<typename... Args>
+constexpr StringDecorator<StringType> StringDecorator<StringType>::Format(const StringDecorator &str, Args &&... args) {
+    return StringDecorator{fmt::format(str._data, args...)};
+}
+
+template<typename StringType>
 template<class T>
 StringDecorator<StringType> &StringDecorator<StringType>::replace(size_type pos, size_type count, const T &t) {
     _data.replace(pos, count, t);

@@ -55,7 +55,8 @@ private:
     };
 
 public:
-    Range(T start, T end, T step = T{1}) : _start(start), _end(end), _step(step) {}
+    template<typename U = T, typename V = T>
+    Range(T start, U end, V step = V{1}) : _start(start), _end(end), _step(step) {}
 
     iterator begin() {
         return iterator{_start, _step, _end};
@@ -72,18 +73,18 @@ private:
 };
 
 namespace MakeRange {
-    template<typename T>
-    Range<T> until(T start, T end, T step = T{1}) {
+    template<typename T, typename U = T, typename V = T>
+    Range<T> until(T start, U end, V step = V{1}) {
         return Range{start, end, step};
     }
 
-    template<typename T>
-    Range<T> range(T start, T end, T step = T{1}) {
+    template<typename T, typename U = T, typename V = T>
+    Range<T> range(T start, U end, V step = V{1}) {
         return Range{start, end + 1, step};
     }
 
-    template<typename T>
-    Range<T> downTo(T start, T end, T step = T{1}) {
+    template<typename T, typename U = T, typename V = T>
+    Range<T> downTo(T start, U end, V step = V{1}) {
         return Range{end, start, -step};
     }
 }

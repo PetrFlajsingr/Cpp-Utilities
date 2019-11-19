@@ -80,13 +80,13 @@ private:
     [[nodiscard]] std::string indent(unsigned int level) const;
 
     template<typename T>
-    void print(T value, unsigned int indentLevel = 0) const;
+    void print(const T &value, unsigned int indentLevel = 0) const;
 
 public:
     explicit Logger(OutStream &outputStream);
 
     template<LogLevel Level, bool PrintTime = false, bool PrintNewLine = true, typename... T>
-    void log(T ... message) const;
+    void log(const T &... message) const;
 
     void startTime();
 

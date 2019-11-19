@@ -86,6 +86,12 @@ void Logger<OutStream>::print(const T &value, unsigned int indentLevel) const {
     } else {
         if constexpr (std::is_same_v<std::decay_t<T>, bool>) {
             outputStream << (value ? "true" : "false");
+        } else if constexpr(is_specialization_v<T, std::optional>) {
+            if (value.has_value()) {
+                print(value.value());
+            } else {
+                print("Optional has no value.");
+            }
         } else {
             outputStream << value;
         }

@@ -11,11 +11,11 @@
 #include <nlohmann/json.hpp>
 #include "io/print.h"
 
-template <>
-struct ConfigContainerTraits<nlohmann::json> {
-    template<typename T, typename ...Keys>
-    static std::optional<T> find(nlohmann::json &container, const Keys &...keys) {
-        using namespace MakeRange;
+namespace {
+    using namespace MakeRange;
+
+    template<typename ...Keys>
+    std::optional<nlohmann::json::iterator> findJsonNode(nlohmann::json &container, const Keys &...keys) {
         std::vector<std::string> tmpKeys{keys...};
         nlohmann::json::iterator iter;
         for (unsigned int i : until(0, tmpKeys.size())) {
@@ -30,15 +30,41 @@ struct ConfigContainerTraits<nlohmann::json> {
                 }
             }
         }
-        return static_cast<T>(*iter);
+        return iter;
     }
-    template <typename T, typename Key>
-    static bool contains(nlohmann::json &container, const Key &key) {
-        return container.contains(key);
+
+    template<typename T, typename ...Keys>
+    void setJsonNode(nlohmann::json &container, const T &value, const Keys &...keys) {
+        std::vector<std::string> tmpKeys{keys...};
+        auto tmp = container;
+        for (unsigned int i : until(0, tmpKeys.size() - 1)) {
+            if (!tmp.contains(tmpKeys[i])) {
+                tmp[tmpKeys[i]] = nlohmann::json::object();
+            }
+            tmp = tmp[tmpKeys[i]];
+        }
+        tmp[tmpKeys.back()] = value;
     }
-    template <typename T, typename Key>
-    static void set(nlohmann::json &container, const Key &key, T &&value) {
-        container[key] = value;
+}
+
+template <>
+struct ConfigContainerTraits<nlohmann::json> {
+    template<typename T, typename ...Keys>
+    static std::optional<T> find(nlohmann::json &container, const Keys &...keys) {
+        if (auto iter = findJsonNode(container, keys...); iter.has_value()) {
+            return **iter;
+        }
+        return std::nullopt;
+    }
+
+    template<typename T, typename ...Keys>
+    static bool contains(nlohmann::json &container, const T &value, const Keys &...keys) {
+        return findJsonNode(container, value, keys...).has_value();
+    }
+
+    template<typename T, typename ...Keys>
+    static void set(nlohmann::json &container, T &&value, const Keys &...keys) {
+        setJsonNode(container, value, keys...);
     }
 };
 

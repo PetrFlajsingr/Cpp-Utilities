@@ -64,7 +64,7 @@ std::string StringUtils::toUpper(const std::string &str) {
 
 template<typename StringType>
 template<typename... Args>
-StringDecorator<StringType>::StringDecorator(Args... args) : _data(args...) {}
+StringDecorator<StringType>::StringDecorator(const Args &... args) : _data(std::forward<const Args &>(args)...) {}
 
 template<typename StringType>
 template<typename T>
@@ -267,7 +267,7 @@ StringDecorator<StringType>::copy(CharT *dest, size_type count, size_type pos) c
 
 template<typename StringType>
 StringDecorator<StringType> StringDecorator<StringType>::substr(size_type pos, size_type count) {
-    return StringDecorator{_data.substr(pos, count)};
+    return StringDecorator{_data.substr(std::forward<size_type>(pos), std::forward<size_type>(count))};
 }
 
 template<typename StringType>
@@ -818,6 +818,33 @@ StringDecorator<StringType> StringDecorator<StringType>::toLower() {
 template<typename StringType>
 StringDecorator<StringType> StringDecorator<StringType>::toUpper() {
     return StringDecorator(StringUtils::toUpper(_data));
+}
+
+template<typename StringType>
+template<template<class> typename ContainerOut>
+ContainerOut<std::string> StringDecorator<StringType>::split(const StringType &delimiter) {
+    return StringUtils::split(_data, delimiter);
+}
+
+template<typename StringType>
+template<typename To>
+std::optional<To> StringDecorator<StringType>::to() {
+    return StringUtils::to<To>(_data);
+}
+
+template<typename StringType>
+bool StringDecorator<StringType>::starts_with(const StringType &str) {
+    return StringUtils::startsWith(_data, str);
+}
+
+template<typename StringType>
+bool StringDecorator<StringType>::ends_with(const StringType &str) {
+    return StringUtils::endsWith(_data, str);
+}
+
+template<typename StringType>
+const StringType &StringDecorator<StringType>::string() const {
+    return _data;
 }
 
 template<typename StringType>

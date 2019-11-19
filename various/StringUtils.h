@@ -47,7 +47,7 @@ public:
     static const size_type npos = StringType::npos;
 
     template<typename ...Args>
-    explicit StringDecorator(Args ...args);
+    explicit StringDecorator(const Args &...args);
 
     static StringDecorator Random(size_type length);
 
@@ -411,30 +411,20 @@ public:
     inline std::istream &operator>>(std::istream &is);
 
     template<template<class> typename ContainerOut = std::vector>
-    ContainerOut<std::string> split(const StringType &delimiter) {
-        return StringUtils::split(_data, delimiter);
-    }
+    inline ContainerOut<std::string> split(const StringType &delimiter);
 
     template<typename To>
-    std::optional<To> to() {
-        return StringUtils::to<To>(_data);
-    }
+    inline std::optional<To> to();
 
-    bool starts_with(const StringType &str) {
-        return StringUtils::startsWith(_data, str);
-    }
+    inline bool starts_with(const StringType &str);
 
-    bool ends_with(const StringType &str) {
-        return StringUtils::endsWith(_data, str);
-    }
+    inline bool ends_with(const StringType &str);
 
-    StringDecorator toLower();
+    inline StringDecorator toLower();
 
-    StringDecorator toUpper();
+    inline StringDecorator toUpper();
 
-    const StringType &string() const {
-        return _data;
-    }
+    inline const StringType &string() const;
 
 private:
     StringType _data;

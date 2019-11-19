@@ -5,7 +5,7 @@
 #ifndef TERRAINGENERATION_NOW_H
 #define TERRAINGENERATION_NOW_H
 #include <chrono>
-#include "../meta/meta.h"
+#include "../meta/chrono.h"
 
 template<typename T, typename = std::enable_if_t<is_duration_v<T>>>
 inline auto now() {

@@ -10,4 +10,5 @@ include_directories(include)
 
 add_executable(main main.cpp error_handling/exceptions.cpp include/fmt/format.cc include/fmt/posix.cc
         graphics/Geometry.cpp
-        graphics/ViewFrustum.cpp)
+        graphics/ViewFrustum.cpp
+        time/FPSCounter.cpp)

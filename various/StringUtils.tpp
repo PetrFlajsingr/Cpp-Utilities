@@ -332,7 +332,7 @@ bool StringDecorator<StringType>::operator>=(const StringType &rhs) const {
 
 template<typename StringType>
 std::ostream &operator<<(std::ostream &os, const StringDecorator<StringType> &decorator) {
-    os << decorator._data;
+    os << decorator.string();
     return os;
 }
 

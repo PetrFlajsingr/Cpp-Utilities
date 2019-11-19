@@ -432,6 +432,10 @@ public:
 
     StringDecorator toUpper();
 
+    const StringType &string() const {
+        return _data;
+    }
+
 private:
     StringType _data;
 };

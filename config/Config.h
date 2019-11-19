@@ -21,8 +21,8 @@
 
 template<typename Container>
 struct ConfigContainerTraits {
-    template<typename T, typename Key>
-    static std::optional<T> find(Container &, const Key &value);
+    template<typename T, typename ...Keys>
+    static std::optional<T> find(Container &, const Keys &...value);
     template<typename T, typename Key>
     static bool contains(Container &, const Key &value);
     template<typename T, typename Key>
@@ -52,8 +52,8 @@ public:
      * Get value by key, return std::nullopt for non-existent value.
      * @tparam T requested value type
      */
-    template<typename T>
-    std::optional<T> get(const Key &key);
+    template<typename T, typename ...Keys>
+    std::optional<T> get(const Keys &...keys);
     /**
      * Get value by key, return defaultValue for non-existent value.
      * @tparam T requested value type

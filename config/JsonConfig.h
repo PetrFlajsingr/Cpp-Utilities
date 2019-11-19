@@ -6,17 +6,31 @@
 #define UTILITIES_JSONCONFIG_H
 
 #include "Config.h"
-#include <nlohmann/json.hpp>
+#include "types/Range.h"
 #include <fstream>
+#include <nlohmann/json.hpp>
+#include "io/print.h"
 
 template <>
 struct ConfigContainerTraits<nlohmann::json> {
-    template <typename T, typename Key>
-    static std::optional<T> find(nlohmann::json &container, const Key &key) {
-        if (auto iter = container.find(key); iter != container.end()) {
-            return static_cast<T>(*iter);
+    template<typename T, typename ...Keys>
+    static std::optional<T> find(nlohmann::json &container, const Keys &...keys) {
+        using namespace MakeRange;
+        std::vector<std::string> tmpKeys{keys...};
+        nlohmann::json::iterator iter;
+        for (unsigned int i : until(0, tmpKeys.size())) {
+            if (i == 0) {
+                if (iter = container.find(tmpKeys[i]); iter == container.end()) {
+                    return std::nullopt;
+                }
+            } else {
+                const auto tmpEnd = iter->end();
+                if (iter = iter->find(tmpKeys[i]); iter == tmpEnd) {
+                    return std::nullopt;
+                }
+            }
         }
-        return std::nullopt;
+        return static_cast<T>(*iter);
     }
     template <typename T, typename Key>
     static bool contains(nlohmann::json &container, const Key &key) {

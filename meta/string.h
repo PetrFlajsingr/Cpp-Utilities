@@ -5,6 +5,9 @@
 #ifndef UTILITIES_STRING_H
 #define UTILITIES_STRING_H
 
+#include <string>
+#include "various/StringUtils.h"
+
 template <typename T>
 struct is_string : std::false_type {};
 

@@ -5,9 +5,9 @@ Config<DataContainer, ReadOnly, Key>::Config(std::string_view path) : path(std::
 }
 
 template<typename DataContainer, bool ReadOnly, typename Key>
-template<typename T>
-std::optional<T> Config<DataContainer, ReadOnly, Key>::get(const Key &key) {
-    return container_traits::template find<T>(data, key);
+template<typename T, typename ...Keys>
+std::optional<T> Config<DataContainer, ReadOnly, Key>::get(const Keys &...keys) {
+    return container_traits::template find<T>(data, keys...);
 }
 
 template<typename DataContainer, bool ReadOnly, typename Key>

@@ -25,12 +25,40 @@ std::optional<To> StringUtils::to(const StringType &str) {
             return std::stof(str);
         } else if constexpr (std::is_same_v<To, double>) {
             return std::stod(str);
+        } else if constexpr (std::is_same_v<To, bool>) {
+            const auto lower = StringUtils::toLower(str);
+            return lower != "false" && lower != "0";
         } else {
             return static_cast<To>(str);
         }
     } catch (...) {
         return std::nullopt;
     }
+}
+
+std::string StringUtils::getRandomString(size_t length) {
+    auto randChar = []() -> char {
+        const char charset[] = "0123456789"
+                               "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                               "abcdefghijklmnopqrstuvwxyz";
+        const size_t max_index = (sizeof(charset) - 1);
+        return charset[rand() % max_index];
+    };
+    std::string str(length, 0);
+    std::generate_n(str.begin(), length, randChar);
+    return str;
+}
+
+std::string StringUtils::toLower(const std::string &str) {
+    std::string result;
+    std::transform(str.begin(), str.end(), std::back_inserter(result), ::tolower);
+    return result;
+}
+
+std::string StringUtils::toUpper(const std::string &str) {
+    std::string result;
+    std::transform(str.begin(), str.end(), std::back_inserter(result), ::toupper);
+    return result;
 }
 
 
@@ -320,7 +348,8 @@ operator+(const typename StringDecorator<StringType>::CharT *lhs, const StringDe
 }
 
 template<typename StringType>
-StringDecorator<StringType> operator+(typename StringDecorator<StringType>::CharT lhs, const StringDecorator<StringType> &rhs) {
+StringDecorator<StringType>
+operator+(typename StringDecorator<StringType>::CharT lhs, const StringDecorator<StringType> &rhs) {
     return lhs + rhs._data;
 }
 
@@ -740,7 +769,8 @@ StringDecorator<StringType>::replace(const_iterator first, const_iterator last, 
 }
 
 template<typename StringType>
-StringDecorator<StringType> &StringDecorator<StringType>::replace(const_iterator first, const_iterator last, const CharT *cstr) {
+StringDecorator<StringType> &
+StringDecorator<StringType>::replace(const_iterator first, const_iterator last, const CharT *cstr) {
     _data.replace(first, last, cstr);
     return *this;
 }
@@ -761,7 +791,8 @@ StringDecorator<StringType>::replace(const_iterator first, const_iterator last, 
 
 template<typename StringType>
 template<class T>
-StringDecorator<StringType> &StringDecorator<StringType>::replace(const_iterator first, const_iterator last, const T &t) {
+StringDecorator<StringType> &
+StringDecorator<StringType>::replace(const_iterator first, const_iterator last, const T &t) {
     _data.replace(first, last, t);
     return *this;
 }
@@ -775,6 +806,21 @@ StringDecorator<StringType>::replace(size_type pos, size_type count, const T &t,
 }
 
 template<typename StringType>
+StringDecorator<StringType> StringDecorator<StringType>::Random(size_type length) {
+    return StringDecorator(StringUtils::getRandomString(length));
+}
+
+template<typename StringType>
+StringDecorator<StringType> StringDecorator<StringType>::toLower() {
+    return StringDecorator(StringUtils::toLower(_data));
+}
+
+template<typename StringType>
+StringDecorator<StringType> StringDecorator<StringType>::toUpper() {
+    return StringDecorator(StringUtils::toUpper(_data));
+}
+
+template<typename StringType>
 template<class T>
 StringDecorator<StringType> &StringDecorator<StringType>::replace(size_type pos, size_type count, const T &t) {
     _data.replace(pos, count, t);
@@ -782,7 +828,8 @@ StringDecorator<StringType> &StringDecorator<StringType>::replace(size_type pos,
 }
 
 template<typename StringType>
-StringDecorator<StringType> &StringDecorator<StringType>::replace(size_type pos, size_type count, size_type count2, CharT ch) {
+StringDecorator<StringType> &
+StringDecorator<StringType>::replace(size_type pos, size_type count, size_type count2, CharT ch) {
     _data.replace(pos, count, count2, ch);
     return *this;
 }
@@ -817,19 +864,22 @@ StringDecorator<StringType>::replace(size_type pos, size_type count, const Strin
 }
 
 template<typename StringType>
-StringDecorator<StringType> &StringDecorator<StringType>::replace(const_iterator first, const_iterator last, const StringType &str) {
+StringDecorator<StringType> &
+StringDecorator<StringType>::replace(const_iterator first, const_iterator last, const StringType &str) {
     _data.replace(first, last, str);
     return *this;
 }
 
 template<typename StringType>
-StringDecorator<StringType> &StringDecorator<StringType>::replace(size_type pos, size_type count, const StringType &str) {
+StringDecorator<StringType> &
+StringDecorator<StringType>::replace(size_type pos, size_type count, const StringType &str) {
     _data.replace(pos, count, str);
     return *this;
 }
 
 template<typename StringType>
-StringDecorator<StringType> &StringDecorator<StringType>::replace(size_type pos, size_type count, const StringDecorator &str) {
+StringDecorator<StringType> &
+StringDecorator<StringType>::replace(size_type pos, size_type count, const StringDecorator &str) {
     _data.replace(pos, count, str._data);
     return *this;
 }

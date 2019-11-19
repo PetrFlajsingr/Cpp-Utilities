@@ -25,6 +25,12 @@ namespace StringUtils {
     StringType from(const T &value) {
         return std::to_string(value);
     }
+
+    std::string getRandomString(size_t length);
+
+    std::string toLower(const std::string &str);
+
+    std::string toUpper(const std::string &str);
 }
 
 template<typename StringType>
@@ -42,6 +48,8 @@ public:
 
     template<typename ...Args>
     explicit StringDecorator(Args ...args);
+
+    static StringDecorator Random(size_type length);
 
     template<typename T>
     inline StringDecorator &operator=(const T &other);
@@ -419,6 +427,10 @@ public:
     bool ends_with(const StringType &str) {
         return StringUtils::endsWith(_data, str);
     }
+
+    StringDecorator toLower();
+
+    StringDecorator toUpper();
 
 private:
     StringType _data;

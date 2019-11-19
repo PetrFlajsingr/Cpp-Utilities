@@ -5,6 +5,9 @@
 #ifndef UTILITIES_LOC_ASSERT_H
 #define UTILITIES_LOC_ASSERT_H
 
+#include <experimental/source_location>
+#include "io/print.h"
+
 inline void loc_assert(bool cond, std::string msg = "",
                        std::experimental::source_location sourceLocation = std::experimental::source_location::current()) {
     if (!cond) {

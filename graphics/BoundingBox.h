@@ -9,16 +9,19 @@
 #include <ostream>
 
 namespace geo {
+    template<unsigned int Dimensions>
     struct BoundingBox {
-        glm::vec3 p1, p2;
+        using Point = glm::vec<Dimensions, float, glm::defaultp>;
+        Point p1, p2;
 
         bool operator==(const BoundingBox &rhs) const;
 
         bool operator!=(const BoundingBox &rhs) const;
 
-        friend std::ostream &operator<<(std::ostream &stream, const BoundingBox &aabb);
+        template<unsigned int Dims>
+        friend std::ostream &operator<<(std::ostream &stream, const BoundingBox<Dims> &aabb);
     };
 }
 
-
+#include "BoundingBox.tpp"
 #endif //UTILITIES_BOUNDINGBOX_H

@@ -9,15 +9,15 @@
 #include <glm/geometric.hpp>
 
 namespace geo {
+    template<unsigned int Dimensions>
     struct BoundingSphere {
-        glm::vec3 center;
+        using Point = glm::vec<Dimensions, float, glm::defaultp>;
+        Point center;
         float radius;
 
-        [[nodiscard]] float distance(glm::vec3 point) const {
-            return glm::distance(center, point);
-        }
+        [[nodiscard]] float distance(Point point) const;
     };
 }
 
-
+#include "BoundingSphere.tpp"
 #endif //UTILITIES_BOUNDINGSPHERE_H

@@ -83,7 +83,7 @@ geo::ViewFrustum::FromProjectionView(const glm::mat4 &viewMatrix,
     return result;
 }
 
-geo::FrustumPosition geo::ViewFrustum::contains(const geo::BoundingSphere &bs) const {
+geo::FrustumPosition geo::ViewFrustum::contains(const geo::BoundingSphere<3> &bs) const {
     auto center = glm::vec4{bs.center, 1.0};
     auto dist01 = std::min(distanceToPlane(planes[0], center),
                            distanceToPlane(planes[1], center));
@@ -101,7 +101,7 @@ geo::FrustumPosition geo::ViewFrustum::contains(const geo::BoundingSphere &bs) c
     return FrustumPosition::Intersection;
 }
 
-geo::FrustumPosition geo::ViewFrustum::contains(const geo::BoundingBox &aabb) const {
+geo::FrustumPosition geo::ViewFrustum::contains(const geo::BoundingBox<3> &aabb) const {
     static auto createPoint = [](auto &first, auto &second, auto &normal) {
         glm::vec3 result = first;
 

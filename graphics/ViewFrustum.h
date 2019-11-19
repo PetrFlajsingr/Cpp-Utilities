@@ -21,9 +21,9 @@ namespace geo {
 
         static ViewFrustum FromProjectionView(const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix);
 
-        [[nodiscard]] FrustumPosition contains(const BoundingBox &aabb) const;
+        [[nodiscard]] FrustumPosition contains(const BoundingBox<3> &aabb) const;
 
-        [[nodiscard]] FrustumPosition contains(const BoundingSphere &bs) const;
+        [[nodiscard]] FrustumPosition contains(const BoundingSphere<3> &bs) const;
     };
 }
 

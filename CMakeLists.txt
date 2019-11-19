@@ -8,7 +8,6 @@ include_directories($(CMAKE_SOURCE_DIR))
 include_directories(.)
 include_directories(include)
 
-add_executable(main main.cpp error_handling/exceptions.cpp include/fmt/format.cc include/fmt/posix.cc graphics/BoundingBox.cpp
-        graphics/BoundingSphere.cpp
+add_executable(main main.cpp error_handling/exceptions.cpp include/fmt/format.cc include/fmt/posix.cc
         graphics/Geometry.cpp
         graphics/ViewFrustum.cpp)

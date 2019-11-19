@@ -11,7 +11,8 @@
 #include <sstream>
 #include <string>
 #include "../time/now.h"
-
+#include "../meta/glm.h"
+#include "../meta/meta.h"
 /**
  * Types of log messages
  */
@@ -103,15 +104,15 @@ private:
 
   OutStream &outputStream;
 
-  [[nodiscard]] std::string indent(uint level) const {
+  [[nodiscard]] std::string indent(unsigned int level) const {
     auto cnt = level * 2;
     return std::string(cnt, ' ');
   }
 
   template <typename T>
-  void print(T value, uint indentLevel = 0) const {
+  void print(T value, unsigned int indentLevel = 0) const {
     using namespace std::string_literals;
-    if constexpr (is_iterable_v<std::decay_t<T>> && !std::is_same_v<std::string, std::decay_t<T>>) {
+    if constexpr (is_iterable_v<std::decay_t<T>> && !is_string_v<std::decay_t<T>>) {
       print(indent(indentLevel));
       print("Container, size: "s + std::to_string(value.size()));
       print(" {\n");
@@ -212,6 +213,21 @@ public:
     }
   }
 
+  template <typename Callable, typename Resolution = std::chrono::milliseconds>
+  void measure(Callable &&callable, unsigned int iterations, std::string_view name = "") {
+      using namespace MakeRange;
+      static_assert(std::is_invocable_v<Callable>, "Callable must be invokable.");
+      static_assert(is_duration_v<Resolution>, "Resolution must be duration type.");
+      const auto startTime = now<Resolution>();
+      for (auto i : until(0, iterations)) {
+          callable();
+      }
+      const auto endTime = now<Resolution>();
+      const auto totalTime = endTime - startTime;
+      log<LogLevel::Verbose>("Measure time for: '", name, "', ", iterations, " iterations.");
+      log<LogLevel::Verbose>("Total: ", totalTime.count(), " ", durationToString<Resolution>());
+      log<LogLevel::Verbose>("Average: ", totalTime.count() / static_cast<float>(iterations), " ", durationToString<Resolution>());
+  }
 };
 
 #endif // LOGGER_H

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <any>
 #include "../time/now.h"
 #include "../meta/glm.h"
 #include "../meta/meta.h"
@@ -61,12 +62,6 @@ private:
      */
     [[nodiscard]] std::string getTime() const;
 
-    /**#pragma clang diagnostic push
-  #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
-     * Log tags
-     * @param level
-     * @return
-     */
     [[nodiscard]] std::string levelToString(LogLevel level) const;
 
     std::chrono::nanoseconds startTimeMs;
@@ -82,6 +77,7 @@ private:
     template<typename T>
     void print(const T &value, unsigned int indentLevel = 0) const;
 
+    std::unordered_map<std::string, std::any> memory;
 public:
     explicit Logger(OutStream &outputStream);
 
@@ -100,6 +96,13 @@ public:
     void setDefaultLevel(LogLevel logLevel);
 
     void setDefaultPrintTime(bool printTime);
+
+    template<typename T>
+    void remember(std::string_view key, const T &value);
+
+    template<typename T>
+    T recall(std::string_view key);
+
 
 private:
     template<LogLevel logLevel>

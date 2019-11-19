@@ -170,6 +170,22 @@ void Logger<OutStream>::measure(Callable &&callable, unsigned int iterations, st
 }
 
 template<typename OutStream>
+template<typename T>
+void Logger<OutStream>::remember(std::string_view key, const T &value) {
+    memory[std::string(key)] = value;
+}
+
+template<typename OutStream>
+template<typename T>
+T Logger<OutStream>::recall(std::string_view key) {
+    if (memory.count(std::string(key)) == 0) {
+        return T{};
+    } else {
+        return std::any_cast<T>(memory[std::string(key)]);
+    }
+}
+
+template<typename OutStream>
 template<LogLevel logLevel>
 Logger<OutStream>::OutOperator<logLevel>::OutOperator(Logger &logger) :logger(logger) {}
 

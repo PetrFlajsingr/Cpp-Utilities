@@ -7,7 +7,7 @@
 #ifndef UTILITIES_CACHEDPROPERTY_H
 #define UTILITIES_CACHEDPROPERTY_H
 
-template <typename T, bool LazyInit = true>
+template<typename T, bool LazyInit = true>
 class CachedProperty {
 public:
     using Calculate = std::function<T()>;
@@ -18,6 +18,7 @@ public:
     CachedProperty(Predicate pred, Calculate calc);
 
     CachedProperty(const CachedProperty &) = delete;
+
     CachedProperty(CachedProperty &&) = delete;
 
     operator const T &();
@@ -35,10 +36,11 @@ private:
     Predicate predicate;
     Calculate calculate;
     bool initialised = false;
+
     void checkAndRecalculate();
 };
 
-template <typename T>
+template<typename T>
 std::ostream &operator<<(std::ostream &stream, CachedProperty<T> &other);
 
 #include "CachedProperty.tpp"

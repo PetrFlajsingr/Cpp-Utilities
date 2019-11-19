@@ -3,6 +3,7 @@
 //
 
 #include "ViewFrustum.h"
+#include "Geometry.h"
 
 geo::ViewFrustum
 geo::ViewFrustum::FromProjectionView(const glm::mat4 &viewMatrix,
@@ -97,9 +98,10 @@ geo::FrustumPosition geo::ViewFrustum::contains(const geo::BoundingSphere &bs) c
     if (dist45 > 0) {
         return FrustumPosition::Inside;
     }
+    return FrustumPosition::Intersection;
 }
 
-geo::FrustumPosition geo::ViewFrustum::contains(const geo::AABB &aabb) const {
+geo::FrustumPosition geo::ViewFrustum::contains(const geo::BoundingBox &aabb) const {
     static auto createPoint = [](auto &first, auto &second, auto &normal) {
         glm::vec3 result = first;
 

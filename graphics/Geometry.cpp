@@ -2,6 +2,7 @@
 // Created by Petr on 19.11.2019.
 //
 
+#include <glm/geometric.hpp>
 #include "Geometry.h"
 
 

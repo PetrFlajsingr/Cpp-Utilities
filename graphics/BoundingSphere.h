@@ -5,8 +5,11 @@
 #ifndef UTILITIES_BOUNDINGSPHERE_H
 #define UTILITIES_BOUNDINGSPHERE_H
 
+#include <glm/vec3.hpp>
+#include <glm/geometric.hpp>
+
 namespace geo {
-    class BoundingSphere {
+    struct BoundingSphere {
         glm::vec3 center;
         float radius;
 

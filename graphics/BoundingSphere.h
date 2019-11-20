@@ -11,7 +11,7 @@
 namespace geo {
     template<unsigned int Dimensions>
     struct BoundingSphere {
-        using Point = glm::vec<Dimensions, float, glm::defaultp>;
+        using Point = glm::vec3;
         Point center;
         float radius;
 

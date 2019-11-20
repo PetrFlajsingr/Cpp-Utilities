@@ -27,7 +27,7 @@ NamedSiblingIterator NamedSiblingIterator::operator++(int) {
 }
 tinyxml2::XMLElement *NamedSiblingIterator::operator*() { return current; }
 bool NamedSiblingIterator::operator==(const NamedSiblingIterator &rhs) const {
-  return current == rhs.current && valid == rhs.valid;
+  return current == rhs.current && (valid || rhs.valid);
 }
 bool NamedSiblingIterator::operator!=(const NamedSiblingIterator &rhs) const {
   return !(rhs == *this);

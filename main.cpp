@@ -7,11 +7,11 @@
 #include <iostream>
 
 int main() {
-  constexpr auto path = "/Users/petr/CLionProjects/Utilities/test.xml";
+  constexpr auto path = "/home/petr/CLionProjects/Utilities/test.xml";
   XmlConfig<false> config{path};
 
   const auto val =
-      config.get<uint>(Xml::Tag{"label"}, Xml::Attribute{"name", "btn2"});
+      config.get<uint>(Xml::Tag{"label"}, Xml::Attribute{"name", "lbl"});
 
   print(val);
 }

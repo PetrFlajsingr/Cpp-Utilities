@@ -8,6 +8,7 @@
 #include <fmt/format.h>
 #include <optional>
 #include <ostream>
+#include <vector>
 
 namespace StringUtils {
     template<template<class> typename ContainerOut = std::vector, typename StringType>

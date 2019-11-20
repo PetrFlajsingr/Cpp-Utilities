@@ -8,6 +8,8 @@
 #include "Config.h"
 #include "tinyxml2/tinyxml2.h"
 #include "various/XMLUtils.h"
+#include <io/print.h>
+#include <memory>
 #include <vector>
 
 namespace {

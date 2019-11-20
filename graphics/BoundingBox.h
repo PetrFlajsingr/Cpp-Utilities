@@ -11,7 +11,7 @@
 namespace geo {
     template<unsigned int Dimensions>
     struct BoundingBox {
-        using Point = glm::vec<Dimensions, float, glm::defaultp>;
+        using Point = glm::vec3;
         Point p1, p2;
 
         bool operator==(const BoundingBox &rhs) const;

@@ -7,7 +7,6 @@
 
 #include <array>
 #include <glm/vec4.hpp>
-#include <glm/ext/matrix_float4x4.hpp>
 #include "BoundingBox.h"
 #include "BoundingSphere.h"
 

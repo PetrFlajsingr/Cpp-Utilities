@@ -28,11 +28,31 @@ namespace StringUtils {
         return std::to_string(value);
     }
 
-    std::string getRandomString(size_t length);
+inline std::string getRandomString(size_t length) {
+  auto randChar = []() -> char {
+    const char charset[] = "0123456789"
+                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                           "abcdefghijklmnopqrstuvwxyz";
+    const size_t max_index = (sizeof(charset) - 1);
+    return charset[rand() % max_index];
+  };
+  std::string str(length, 0);
+  std::generate_n(str.begin(), length, randChar);
+  return str;
+}
 
-    std::string toLower(const std::string &str);
+inline std::string toLower(const std::string &str) {
+  std::string result;
+  std::transform(str.begin(), str.end(), std::back_inserter(result), ::tolower);
+  return result;
+}
 
-    std::string toUpper(const std::string &str);
+inline std::string toUpper(const std::string &str) {
+  std::string result;
+  std::transform(str.begin(), str.end(), std::back_inserter(result), ::toupper);
+  return result;
+}
+
 }
 
 template<typename StringType>

@@ -9,7 +9,7 @@ Xml::Attribute::Attribute(std::string name, std::string value)
     : Base(), name(name), value(value) {}
 Xml::Index::Index(int index) : index(index) {}
 NamedSiblingIterator::NamedSiblingIterator(tinyxml2::XMLElement *element)
-    : current(element) {}
+    : current(element), valid(element != nullptr) {}
 NamedSiblingIterator &NamedSiblingIterator::operator++() {
   current = current->NextSiblingElement(current->Name());
   if (current == nullptr) {
@@ -27,7 +27,7 @@ NamedSiblingIterator NamedSiblingIterator::operator++(int) {
 }
 tinyxml2::XMLElement *NamedSiblingIterator::operator*() { return current; }
 bool NamedSiblingIterator::operator==(const NamedSiblingIterator &rhs) const {
-  return current == rhs.current && (valid || rhs.valid);
+  return current == rhs.current && !valid && !rhs.valid;
 }
 bool NamedSiblingIterator::operator!=(const NamedSiblingIterator &rhs) const {
   return !(rhs == *this);
@@ -42,7 +42,9 @@ NamedSiblingIterator NamedSiblingIteratorInterface::begin() { return current; }
 NamedSiblingIterator NamedSiblingIteratorInterface::end() { return nullptr; }
 NamedSiblingIteratorInterface::NamedSiblingIteratorInterface(
     tinyxml2::XMLElement *element)
-    : current(element) {}
+    : current(element) {
+
+}
 NamedSiblingIteratorInterface childrenByName(tinyxml2::XMLElement *element,
                                              const std::string &name) {
   return NamedSiblingIteratorInterface{

@@ -10,8 +10,12 @@ int main() {
   constexpr auto path = "/home/petr/CLionProjects/Utilities/test.xml";
   XmlConfig<false> config{path};
 
-  const auto val =
-      config.get<uint>(Xml::Tag{"label"}, Xml::Attribute{"name", "lbl"});
+  config.set<std::string>(std::string("test"), Xml::Tag{"str"}, Xml::Tag{"Testerino"});
+
+   auto val = config.get<std::string>(Xml::Tag{"str"}, Xml::Tag{"Testerino"}, Xml::Tag{"string"});
+
+   config.save();
 
   print(val);
+  std::cout.flush();
 }

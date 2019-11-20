@@ -17,4 +17,4 @@ add_executable(main main.cpp
         graphics/Geometry.cpp
         graphics/ViewFrustum.cpp
         time/FPSCounter.cpp
-        include/tinyxml2/tinyxml2.cpp)
+        include/tinyxml2/tinyxml2.cpp various/XMLSerialisation.h config/XmlConfig.tpp)

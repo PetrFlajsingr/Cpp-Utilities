@@ -5,15 +5,17 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include "../meta/glm.h"
+#include "../meta/meta.h"
+#include "../time/now.h"
+#include "types/Range.h"
+#include <any>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <any>
-#include "../time/now.h"
-#include "../meta/glm.h"
-#include "../meta/meta.h"
+#include <unordered_map>
 
 /**
  * Types of log messages

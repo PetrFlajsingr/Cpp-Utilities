@@ -5,9 +5,9 @@
 #ifndef UTILITIES_STRINGUTILS_H
 #define UTILITIES_STRINGUTILS_H
 
-
-#include <ostream>
 #include <fmt/format.h>
+#include <optional>
+#include <ostream>
 
 namespace StringUtils {
     template<template<class> typename ContainerOut = std::vector, typename StringType>

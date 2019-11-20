@@ -8,7 +8,13 @@ include_directories($(CMAKE_SOURCE_DIR))
 include_directories(.)
 include_directories(include)
 
-add_executable(main main.cpp error_handling/exceptions.cpp include/fmt/format.cc include/fmt/posix.cc
+find_package(glm REQUIRED)
+include_directories(${GLM_INCLUDE_DIRS})
+add_executable(main main.cpp
+        various/XMLUtils.cpp
+        #error_handling/exceptions.cpp
+        include/fmt/format.cc include/fmt/posix.cc
         graphics/Geometry.cpp
         graphics/ViewFrustum.cpp
-        time/FPSCounter.cpp)
+        time/FPSCounter.cpp
+        include/tinyxml2/tinyxml2.cpp)

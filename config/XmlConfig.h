@@ -74,6 +74,12 @@ template <> struct ConfigContainerTraits<XmlContainer> {
   static void set(XmlContainer &container, T &&value, const Keys &... keys) {
     KeysContainer tmpKeys{keys...};
     auto element = container->RootElement();
+    if (tmpKeys.empty()) {
+      auto newElement = dynamic_cast<tinyxml2::XMLElement *>(
+          element->LinkEndChild(container->NewElement("")));
+      to_xml(value, newElement);
+      return;
+    }
     setByName<T>(container.get(), element, value, tmpKeys);
   }
 };

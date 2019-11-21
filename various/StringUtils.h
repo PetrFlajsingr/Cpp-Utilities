@@ -457,7 +457,9 @@ public:
     template<typename... Args>
     constexpr static inline StringDecorator Format(const StringDecorator &str, Args &&... args);
 
-private:
+    inline const CharT *c_str() const { return _data.c_str(); }
+
+  private:
     StringType _data;
 };
 

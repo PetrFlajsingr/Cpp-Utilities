@@ -2,6 +2,7 @@
 // Created by Petr on 18.11.2019.
 //
 
+#include "config/JsonConfig.h"
 #include "config/XmlConfig.h"
 #include "io/print.h"
 #include "observable/observable.hpp"
@@ -107,8 +108,10 @@ int main() {
           .value();
 
   print(btn.getId());
+  btn.enabled.subscribe([](auto val) { print(val); });
   btn.setEnabled(true);
   config.set(btn, Xml::Tag{"button"}, Xml::Attribute{"id", btn.getId()});
+  btn.setEnabled(true);
 
   Button btn2{btn};
   print(btn2.getId());

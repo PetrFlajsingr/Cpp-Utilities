@@ -57,14 +57,15 @@ struct ConfigContainerTraits<nlohmann::json> {
         return std::nullopt;
     }
 
-    template<typename T, typename ...Keys>
-    static bool contains(nlohmann::json &container, const T &value, const Keys &...keys) {
-        return findJsonNode(container, value, keys...).has_value();
+    template <typename... Keys>
+    static bool contains(nlohmann::json &container, const Keys &... keys) {
+      return findJsonNode(container, keys...).has_value();
     }
 
     template<typename T, typename ...Keys>
-    static void set(nlohmann::json &container, T &&value, const Keys &...keys) {
-        setJsonNode(container, value, keys...);
+    static void set(nlohmann::json &container, const T &value,
+                    const Keys &... keys) {
+      setJsonNode(container, value, keys...);
     }
 };
 

@@ -25,10 +25,10 @@ struct ConfigContainerTraits {
     static std::optional<T> find(Container &, const Keys &...value);
 
     template<typename T, typename ...Keys>
-    static bool contains(Container &, const T &value, const Keys &...keys);
+    static bool contains(Container &, const Keys &... keys);
 
     template<typename T, typename ...Keys>
-    static void set(Container &, T &&value, const Keys &...key);
+    static void set(Container &, const T &value, const Keys &... key);
 };
 
 template <typename Container>
@@ -68,8 +68,7 @@ public:
     template<typename T, typename = std::enable_if_t<!ReadOnly>, typename ...Keys>
     Config &set(const T &value, const Keys &...keys);
 
-    template<typename T, typename ...Keys>
-    bool contains(const T &value, const Keys &...keys);
+    template <typename... Keys> bool contains(const Keys &... keys);
     /**
      * Save config to file. Allowed only if config is not in ReadOnly mode.
      */

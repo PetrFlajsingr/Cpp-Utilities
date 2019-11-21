@@ -100,4 +100,36 @@ public:
 NamedSiblingIteratorInterface childrenByName(tinyxml2::XMLElement *element,
                                              const std::string &name);
 
+namespace Xml {
+using KeysContainer = std::vector<std::reference_wrapper<const Xml::Base>>;
+template <typename... Args>
+tinyxml2::XMLElement *findElement(tinyxml2::XMLElement *el,
+                                  const KeysContainer &keys,
+                                  unsigned int currentIndex = 0) {
+  if (auto der = dynamic_cast<const Xml::Tag *>(&(keys[currentIndex].get()));
+      der != nullptr) {
+    for (const auto &element : childrenByName(el, der->name)) {
+      if (currentIndex == keys.size() - 1) {
+        return element;
+      } else if (auto res = findElement(element, keys, currentIndex + 1);
+                 res != nullptr) {
+        return res;
+      }
+    }
+    return nullptr;
+  } else {
+    if (auto der =
+            dynamic_cast<const Xml::Attribute *>(&(keys[currentIndex].get()));
+        der != nullptr) {
+      auto attr = el->Attribute(der->name.c_str(), der->value.c_str());
+      if (attr != nullptr) {
+        return el;
+      }
+      return nullptr;
+    }
+  }
+  return nullptr;
+}
+} // namespace Xml
+
 #endif // UTILITIES_XMLUTILS_H

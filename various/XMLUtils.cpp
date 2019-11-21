@@ -42,9 +42,7 @@ NamedSiblingIterator NamedSiblingIteratorInterface::begin() { return current; }
 NamedSiblingIterator NamedSiblingIteratorInterface::end() { return nullptr; }
 NamedSiblingIteratorInterface::NamedSiblingIteratorInterface(
     tinyxml2::XMLElement *element)
-    : current(element) {
-
-}
+    : current(element) {}
 NamedSiblingIteratorInterface childrenByName(tinyxml2::XMLElement *element,
                                              const std::string &name) {
   return NamedSiblingIteratorInterface{

@@ -24,4 +24,10 @@ auto bindTo(observable::value<T> &a, observable::value<U> &b,
   return OneWayBinding{a, b, transformA};
 }
 
+template <typename T, typename U, typename F1 = std::function<U(const T &)>, typename = typename std::enable_if_t<!is_specialization_v<T, observable::value>>>
+auto bindTo(T &a, observable::value<U> &b,
+            F1 transformA = F1{[](const T &val) -> U { return U(val); }}) {
+  return OneWayBindingVal<T, U>{a, b, transformA};
+}
+
 #endif // UTILITIES_BINDING_H

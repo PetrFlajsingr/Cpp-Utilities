@@ -106,11 +106,14 @@ int main() {
   observable::value<int> c{555};
   observable::value<int> d{3};
   observable::value<int> e{3};
+  int wat = 10;
   a.subscribe([](auto &val) { print("a: ", val); });
   b.subscribe([](auto &val) { print("b: ", val); });
   c.subscribe([](auto &val) { print("c: ", val); });
   d.subscribe([](auto &val) { print("d: ", val); });
   e.subscribe([](auto &val) { print("e: ", val); });
+
+  auto w = bindTo(wat, a);
 
   auto binding = bindBidirectional(a, b);
   auto binding2 = bindBidirectional(c, d);
@@ -124,6 +127,8 @@ int main() {
 
   a = 11;
   b = 100;
+
+  print("wat: ", wat);
 
   /*constexpr auto path = "/Users/petr/CLionProjects/Utilities/test.xml";
   XmlConfig<false> config{path};

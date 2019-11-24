@@ -101,6 +101,32 @@ template <> void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 }
 
 int main() {
+  for (auto val : range(5, 1)) {
+    print(val);
+  }
+  print("___________________________");
+  for (auto val : range(1, 5)) {
+    print(val);
+  }
+
+  print("___________________________");
+  for (auto val : range(5, 1, 2)) {
+    print(val);
+  }
+  print("___________________________");
+  for (auto val : range(1, 5, 3)) {
+    print(val);
+  }
+
+  print("___________________________");
+  for (auto val : range(10)) {
+    print(val);
+  }
+  print("___________________________");
+  for (auto val : range(-10)) {
+    print(val);
+  }
+  return 0;
   observable::value<int> a{11};
   observable::value<int> b{1212};
   observable::value<int> c{555};

@@ -91,11 +91,13 @@ Range<T> MakeRange::downUntil(T start, U end, V step) {
 
 template <typename T, typename U, typename V>
 Range<T> MakeRange::range(T start, U end, V step) {
-  assert(step > V{0});
-  if (start <= end) {
-    return Range{start, end + 1, step};
+  assert(step != V{0});
+  if (step < V{0}) {
+    assert(start >= end);
+    return Range{start, end - 1, step};
   } else {
-    return Range{start, end - 1, -step};
+    assert(start <= end);
+    return Range{start, end + 1, step};
   }
 }
 
@@ -103,8 +105,8 @@ template <typename T, typename U, typename V>
 Range<T> MakeRange::range(T start) {
   const auto end = T{0};
   if (start <= end) {
-    return Range{start, end + 1, T{1}};
+    return Range{end, start, -T{1}};
   } else {
-    return Range{start, end - 1, -T{1}};
+    return Range{end, start, T{1}};
   }
 }

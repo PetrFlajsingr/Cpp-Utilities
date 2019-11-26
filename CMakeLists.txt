@@ -8,8 +8,8 @@ include_directories($(CMAKE_SOURCE_DIR))
 include_directories(.)
 include_directories(include/)
 
-find_package(glm REQUIRED)
-include_directories(${GLM_INCLUDE_DIRS})
+#find_package(glm REQUIRED)
+#include_directories(${GLM_INCLUDE_DIRS})
 add_executable(main main.cpp
         various/XMLUtils.cpp
         #error_handling/exceptions.cpp

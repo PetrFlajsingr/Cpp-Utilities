@@ -4,10 +4,8 @@
 
 #include "config/JsonConfig.h"
 #include "config/XmlConfig.h"
-#include "io/print.h"
 #include "observable/observable.hpp"
 #include <iostream>
-#include <reactive/Binding.h>
 #include <utility>
 
 using String = StringDecorator<std::string>;
@@ -101,39 +99,40 @@ template <> void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 }
 
 int main() {
-  for (auto val : range(10)) {
+    for (int val : range(15UL, 10, -1)) {
     print(val);
   }
   print("___________________________");
-  return 0;
-  observable::value<int> a{11};
-  observable::value<int> b{1212};
-  observable::value<int> c{555};
-  observable::value<int> d{3};
-  observable::value<int> e{3};
-  int wat = 10;
-  a.subscribe([](auto &val) { print("a: ", val); });
-  b.subscribe([](auto &val) { print("b: ", val); });
-  c.subscribe([](auto &val) { print("c: ", val); });
-  d.subscribe([](auto &val) { print("d: ", val); });
-  e.subscribe([](auto &val) { print("e: ", val); });
 
-  auto w = bindTo(wat, a);
+    /*
+    observable::value<int> a{11};
+    observable::value<int> b{1212};
+    observable::value<int> c{555};
+    observable::value<int> d{3};
+    observable::value<int> e{3};
+    int wat = 10;
+    a.subscribe([](auto &val) { print("a: ", val); });
+    b.subscribe([](auto &val) { print("b: ", val); });
+    c.subscribe([](auto &val) { print("c: ", val); });
+    d.subscribe([](auto &val) { print("d: ", val); });
+    e.subscribe([](auto &val) { print("e: ", val); });
 
-  auto binding = bindBidirectional(a, b);
-  auto binding2 = bindBidirectional(c, d);
-  {auto binding1 = bindBidirectional(b, c);
-    auto binding3 = bindTo(e, a);
+    auto w = bindTo(wat, a);
 
-    e = 1000;
-    a = 10;
-    d = 500;
-  }
+    auto binding = bindBidirectional(a, b);
+    auto binding2 = bindBidirectional(c, d);
+    {auto binding1 = bindBidirectional(b, c);
+      auto binding3 = bindTo(e, a);
 
-  a = 11;
-  b = 100;
+      e = 1000;
+      a = 10;
+      d = 500;
+    }
 
-  print("wat: ", wat);
+    a = 11;
+    b = 100;
+
+    print("wat: ", wat);*/
 
   /*constexpr auto path = "/Users/petr/CLionProjects/Utilities/test.xml";
   XmlConfig<false> config{path};

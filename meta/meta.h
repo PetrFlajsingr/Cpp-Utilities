@@ -26,6 +26,9 @@ constexpr bool is_one_of_v = (std::is_same_v<T, Types> || ...);
 template<template<class> typename T, typename... Types>
 constexpr bool any_of_v = (T<Types>::value || ...);
 
+template<template<class> typename T, typename... Types>
+constexpr bool all_of_v = (T<Types>::value && ...);
+
 template<typename T>
 struct tag {
     using type = T;
@@ -36,6 +39,15 @@ struct last_of {
 };
 template<typename... T>
 using last_of_t = typename last_of<T...>::type;
+
+template<typename T>
+struct is_char {
+    static constexpr bool value =
+            std::is_same_v<T, char> || std::is_same_v<T, unsigned char> || std::is_same_v<T, signed char> ||
+            std::is_same_v<T, wchar_t> || std::is_same_v<T, char16_t> || std::is_same_v<T, char32_t>;
+};
+template<typename T>
+constexpr bool is_char_v = is_char<T>::value;
 
 template<typename ...T>
 using highest_precision_t = std::conditional_t<is_one_of_v<long double, T...>, long double, std::conditional_t<is_one_of_v<double, T...>, double, std::conditional_t<is_one_of_v<float, T...>, float, void>>>;

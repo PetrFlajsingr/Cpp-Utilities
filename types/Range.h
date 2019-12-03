@@ -54,22 +54,24 @@ private:
 
 namespace MakeRange {
     template<typename T, typename U = T, typename V = T>
-    Range<T> until(T start, U end, V step = V{1});
+    Range<T> until(T start, U end, V step = T{1});
 
     template<typename T, typename U = T, typename V = T>
-    Range<T> to(T start, U end, V step = V{1});
+    Range<T> to(T start, U end, V step = T{1});
 
     template<typename T, typename U = T, typename V = T>
-    Range<T> downTo(T start, U end, V step = V{1});
+    Range<T> downTo(T start, U end, V step = T{1});
 
     template<typename T, typename U = T, typename V = T>
-    Range<T> downUntil(T start, U end, V step = V{1});
+    Range<T> downUntil(T start, U end, V step = T{1});
 
-    template<typename T, typename U, typename V,
-            typename ValueType = typename std::conditional_t<any_of_v<std::is_floating_point, T, U, V>, highest_precision_t<T, U, V>,
+    template<typename T, typename U, typename V = T,
+            typename ValueType =
+            typename std::conditional_t<
+                    any_of_v<std::is_floating_point, T, U, V>, highest_precision_t<T, U, V>,
                     std::conditional_t<any_of_v<std::is_signed, T, U, V>, largest_signed_integer_t<T, U, V>,
                             largest_integer_t<T, U, V>>>>
-    Range<ValueType> range(T start, U end, V step);
+    Range<ValueType> range(T start, U end, V step = T{1});
 
     template<typename T>
     Range<T> range(T start);

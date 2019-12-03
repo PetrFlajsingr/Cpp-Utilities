@@ -12,6 +12,7 @@ template<typename T>
 class Range {
 private:
     struct iterator {
+        using value_type = T;
         iterator() = default;
 
         iterator(T value, T step, T max, bool up);
@@ -42,9 +43,9 @@ public:
     template<typename U = T, typename V = T>
     Range(T start, U end, V step = V{1});
 
-    iterator begin();
+    iterator begin() const;
 
-    iterator end();
+    iterator end() const;
 
 private:
     const T _start;

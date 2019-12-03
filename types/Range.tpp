@@ -7,12 +7,12 @@ Range<T>::Range(T start, U end, V step)
         : _start(start), _end(end), _step(step) {}
 
 template<typename T>
-typename Range<T>::iterator Range<T>::begin() {
+typename Range<T>::iterator Range<T>::begin() const {
     return iterator{_start, _step, _end, _start <= _end};
 }
 
 template<typename T>
-typename Range<T>::iterator Range<T>::end() {
+typename Range<T>::iterator Range<T>::end() const {
     return iterator{_end, _step, _end, _start <= _end};
 }
 

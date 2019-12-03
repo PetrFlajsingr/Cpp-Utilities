@@ -7,6 +7,7 @@
 #include "observable/observable.hpp"
 #include <iostream>
 #include <utility>
+#include "types/Zip.h"
 
 using String = StringDecorator<std::string>;
 
@@ -106,23 +107,14 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 int main() {
     //static_assert(std::is_same_v<decltype( range('a', 'z')), int>);
-    for (char val : range('a', 'z', 2)) {
-        print(val);
-    }
-    print("___________________________");
-    for (auto val : range(100, 500, 2)) {
-        print(val);
-    }
-    print("___________________________");
-    for (auto val : range(500, 100, 5)) {
-        print(val);
-    }
-    print("___________________________");
-    for (auto val : range(-10)) {
-        print(val);
-    }
-    print("___________________________");
 
+    std::vector a{1, 2, 3};
+    std::array<int, 2> b{0, 1};
+    for (auto[a, b, c] : zip(a, b, range(10))) {
+        std::cout << a << ", " << b << std::endl;
+    }
+
+    print('a');
     /*
     observable::value<int> a{11};
     observable::value<int> b{1212};

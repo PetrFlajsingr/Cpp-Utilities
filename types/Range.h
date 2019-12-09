@@ -53,6 +53,7 @@ private:
     const T _step;
 };
 
+// TODO: support for negative steps
 template<typename T, unsigned int Dimensions>
 class MultiDimRange {
     template<typename U>

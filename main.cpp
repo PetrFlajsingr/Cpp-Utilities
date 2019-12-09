@@ -109,20 +109,21 @@ int main() {
     //static_assert(std::is_same_v<decltype( range('a', 'z')), int>);
     std::vector<float> arr{0.1, 0.2, 0.5, 0.8, 1, 1, 1};
     std::vector<std::string> yah{"a", "b", "c", "dd", "ee", "adfds"};
+
     for (auto[index, value, value2] : zip(range(150), arr, yah)) {
         print(index, ": ", value, " ", value2);
     }
 
-    /* for (auto[x, y] : range<int, 2>({0, 0}, {5, 2}, {1, 1})) {
+     for (auto[x, y] : range<int, 2>({0, 0}, {5, 2}, {1, 1})) {
          print(x, "x", y);
      }
-     for (auto[x, y, z] : range<int, 3>({0, 0, 10}, {5, 2, 15}, {1, 1, 1})) {
-         print(x, "x", y, "x", z);
-     }
+    for (auto[x, y, z] : range<int, 3>({0, 0, 10}, {5, 2, 15}, {1, 1, 1})) {
+        print(x, "x", y, "x", z);
+    }
      print("________________");
      for (auto[x, y] : range<float, 2>({0.1, 0}, {5, 2}, {3, 1})) {
          print(x, "x", y);
-     }*/
+     }
     /*
     observable::value<int> a{11};
     observable::value<int> b{1212};

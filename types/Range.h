@@ -13,9 +13,10 @@ class Range {
 private:
     struct iterator {
         using value_type = T;
+
         iterator() = default;
 
-        iterator(T value, T step, T max, bool up);
+        iterator(T value, T step, T endValue, bool up);
 
         iterator(const iterator &other);
 
@@ -53,6 +54,59 @@ private:
     const T _step;
 };
 
+template<typename T, unsigned int Dimensions>
+class MultiDimRange {
+    template<typename U>
+    using container_type = std::array<U, Dimensions>;
+    static_assert(Dimensions > 1);
+public:
+    using value_type = container_type<T>;
+private:
+    struct iterator {
+        iterator() = default;
+
+        iterator(value_type value,
+                 value_type step,
+                 value_type startValue,
+                 value_type endValue);
+
+        iterator(const iterator &other);
+
+        iterator &operator=(const iterator &other);
+
+        bool operator==(const iterator &rhs) const;
+
+        bool operator!=(const iterator &rhs) const;
+
+        value_type operator*() const;
+
+        value_type *operator->();
+
+        iterator &operator++();
+
+        iterator operator++(int);
+
+        value_type value;
+        value_type step;
+        value_type startValue;
+        value_type endValue;
+    };
+
+public:
+    template<typename U = T>
+    MultiDimRange(container_type<T> start, container_type<T> end, container_type<T> step);
+
+    iterator begin() const;
+
+    iterator end() const;
+
+private:
+    const value_type _start;
+    const value_type _end;
+    const value_type _step;
+};
+
+
 namespace MakeRange {
     template<typename T, typename U = T, typename V = T>
     Range<T> until(T start, U end, V step = T{1});
@@ -76,6 +130,14 @@ namespace MakeRange {
 
     template<typename T>
     Range<T> range(T start);
+
+    template<typename T, unsigned int Dimensions>
+    MultiDimRange<T, Dimensions> range(typename MultiDimRange<T, Dimensions>::value_type start,
+                                       typename MultiDimRange<T, Dimensions>::value_type end,
+                                       typename MultiDimRange<T, Dimensions>::value_type step);
+
+    template<typename T, unsigned int Dimensions>
+    MultiDimRange<T, Dimensions> range(typename MultiDimRange<T, Dimensions>::value_type end);
 } // namespace MakeRange
 
 #include "Range.tpp"

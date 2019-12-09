@@ -107,14 +107,19 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 int main() {
     //static_assert(std::is_same_v<decltype( range('a', 'z')), int>);
-
-    std::vector a{1, 2, 3};
-    std::array<int, 2> b{0, 1};
-    for (auto[a, b, c] : zip(a, b, range(10))) {
-        std::cout << a << ", " << b << std::endl;
+    for (auto x : range(5)) {
+        print(x);
     }
-
-    print('a');
+    for (auto[x, y] : range<int, 2>({0, 0}, {5, 2}, {1, 1})) {
+        print(x, "x", y);
+    }
+    for (auto[x, y, z] : range<int, 3>({0, 0, 10}, {5, 2, 15}, {1, 1, 1})) {
+        print(x, "x", y, "x", z);
+    }
+    print("________________");
+    for (auto[x, y] : range<float, 2>({0.1, 0}, {5, 2}, {3, 1})) {
+        print(x, "x", y);
+    }
     /*
     observable::value<int> a{11};
     observable::value<int> b{1212};

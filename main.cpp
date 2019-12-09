@@ -114,10 +114,10 @@ int main() {
         print(index, ": ", value, " ", value2);
     }
 
-    for (auto[x, y] : range<int, 2>({0, 0}, {5, 2}, {1, 0})) {
+    for (auto[x, y] : range<int, 2>({0, 0}, {5, 2}, {1, 1})) {
         print(x, "x", y);
     }
-
+    return 0;
     for (auto[x, y] : range<int, 2>({5, 2})) {
         print(x, "x", y);
     }

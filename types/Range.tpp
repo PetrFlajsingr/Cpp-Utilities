@@ -25,6 +25,7 @@ Range<T>::iterator::iterator(const Range::iterator &other) {
     value = other.value;
     endValue = other.endValue;
     step = other.step;
+    up = other.up;
 }
 
 template<typename T>
@@ -33,6 +34,7 @@ Range<T>::iterator::operator=(const Range::iterator &other) {
     value = other.value;
     endValue = other.endValue;
     step = other.step;
+    up = other.up;
 }
 
 template<typename T>

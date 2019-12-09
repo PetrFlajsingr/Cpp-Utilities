@@ -10,7 +10,7 @@
 
 template<typename T>
 class Range {
-private:
+public:
     struct iterator {
         using value_type = T;
 
@@ -39,7 +39,6 @@ private:
         T endValue;
         bool up;
     };
-
 public:
     template<typename U = T, typename V = T>
     Range(T start, U end, V step = V{1});
@@ -61,7 +60,7 @@ class MultiDimRange {
     static_assert(Dimensions > 1);
 public:
     using value_type = container_type<T>;
-private:
+
     struct iterator {
         iterator() = default;
 

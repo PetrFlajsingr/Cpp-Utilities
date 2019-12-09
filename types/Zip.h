@@ -88,14 +88,27 @@ void for_each_in_tuple(Func f, Tuple &&tuple) {
                       std::make_index_sequence<std::tuple_size<std::decay_t<Tuple>>::value>());
 }
 
+template<typename Func, typename Tuple1, typename Tuple2, size_t...Is>
+void for_each_in_tuple_pair(Func f, Tuple1 &&tuple, Tuple2 &&tuple2, std::index_sequence<Is...>) {
+    using expander = int[];
+    (void) expander{0, ((void) f(std::get<Is>(std::forward<Tuple1>(tuple)),
+                                 std::get<Is>(std::forward<Tuple2>(tuple2))), 0)...};
+}
+
+template<typename Func, typename Tuple1, typename Tuple2>
+void for_each_in_tuple_pair(Func f, Tuple1 &&tuple, Tuple2 &&tuple2) {
+    for_each_in_tuple_pair(f, std::forward<Tuple1>(tuple), std::forward<Tuple2>(tuple2),
+                           std::make_index_sequence<std::tuple_size<std::decay_t<Tuple1>>::value>());
+}
+
 template<typename ...T>
 class Zip {
 public:
     explicit Zip(const T &...vals) : beginIters(std::begin(vals)...), endIters(std::end(vals)...) {}
 
     struct iterator {
-        using value_type = std::tuple<typename std::iterator_traits<decltype(std::begin(
-                std::declval<T>()))>::value_type...>;
+        using value_type = std::tuple<std::decay_t<decltype(*std::declval<decltype(std::begin(
+                std::declval<T>()))>())>...>;
         std::tuple<decltype(std::begin(std::declval<T>()))...> iters;
 
         explicit iterator(std::tuple<decltype(std::begin(std::declval<T>()))...> iters) : iters(iters) {}
@@ -109,7 +122,11 @@ public:
         iterator &operator=(iterator &&other) noexcept = default;
 
         bool operator==(const iterator &rhs) const {
-            return iters == rhs.iters;
+            bool areSame = false;
+            for_each_in_tuple_pair([&areSame](const auto &first, const auto &second) {
+                areSame = areSame || first == second;
+            }, iters, rhs.iters);
+            return areSame;
         }
 
         bool operator!=(const iterator &rhs) const {

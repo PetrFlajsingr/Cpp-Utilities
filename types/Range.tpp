@@ -128,6 +128,7 @@ MultiDimRange<T, Dimensions>
 MakeRange::range(typename MultiDimRange<T, Dimensions>::value_type start,
                  typename MultiDimRange<T, Dimensions>::value_type end,
                  typename MultiDimRange<T, Dimensions>::value_type step) {
+    assert(std::all_of(step.begin(), step.end(), [](const auto &val) { return val != 0; }));
     return MultiDimRange<T, Dimensions>{start, end, step};
 }
 

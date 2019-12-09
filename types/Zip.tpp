@@ -51,5 +51,5 @@ const typename Zip<T...>::iterator Zip<T...>::iterator::operator++(int) {
 
 template<typename... T>
 Zip<T...> zip(const T &... vals) {
-    return Zip(vals...);
+    return std::move(Zip(std::forward<T>(vals)...));
 }

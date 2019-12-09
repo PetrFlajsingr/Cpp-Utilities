@@ -114,16 +114,20 @@ int main() {
         print(index, ": ", value, " ", value2);
     }
 
-     for (auto[x, y] : range<int, 2>({0, 0}, {5, 2}, {1, 1})) {
-         print(x, "x", y);
-     }
+    for (auto[x, y] : range<int, 2>({0, 0}, {5, 2}, {1, 0})) {
+        print(x, "x", y);
+    }
+
+    for (auto[x, y] : range<int, 2>({5, 2})) {
+        print(x, "x", y);
+    }
     for (auto[x, y, z] : range<int, 3>({0, 0, 10}, {5, 2, 15}, {1, 1, 1})) {
         print(x, "x", y, "x", z);
     }
-     print("________________");
-     for (auto[x, y] : range<float, 2>({0.1, 0}, {5, 2}, {3, 1})) {
-         print(x, "x", y);
-     }
+    print("________________");
+    for (auto[x, y] : range<float, 2>({0.1, 0}, {5, 2}, {3, 1})) {
+        print(x, "x", y);
+    }
     /*
     observable::value<int> a{11};
     observable::value<int> b{1212};

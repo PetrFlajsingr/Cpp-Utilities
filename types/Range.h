@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <meta/meta.h>
+#include <functional>
 
 template<typename T>
 class Range {
@@ -53,7 +54,6 @@ private:
     const T _step;
 };
 
-// TODO: support for negative steps
 template<typename T, unsigned int Dimensions>
 class MultiDimRange {
     template<typename U>
@@ -90,6 +90,7 @@ public:
         value_type step;
         value_type startValue;
         value_type endValue;
+        container_type<std::function<bool(const T &, const T &)>> comp;
     };
 
 public:

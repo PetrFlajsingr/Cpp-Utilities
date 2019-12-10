@@ -130,7 +130,7 @@ MakeRange::range(typename MultiDimRange<T, Dimensions>::value_type start,
                  typename MultiDimRange<T, Dimensions>::value_type step) {
     assert(std::all_of(step.begin(), step.end(), [](const auto &val) { return val != 0; }));
     for (unsigned int i = 0; i < Dimensions; ++i) {
-        assert(start[i] < end[i] == step[i] > 0);
+        assert((start[i] < end[i]) == (step[i] > 0));
     }
     return MultiDimRange<T, Dimensions>{start, end, step};
 }
@@ -148,7 +148,15 @@ MultiDimRange<T, Dimensions>::iterator::iterator(MultiDimRange::value_type value
                                                  MultiDimRange::value_type endValue) : value(value),
                                                                                        step(step),
                                                                                        startValue(startValue),
-                                                                                       endValue(endValue) {}
+                                                                                       endValue(endValue) {
+    for (unsigned int i = 0; i < Dimensions; ++i) {
+        if (startValue[i] < endValue[i]) {
+            comp[i] = std::less<T>{};
+        } else {
+            comp[i] = std::greater<T>{};
+        }
+    }
+}
 
 template<typename T, unsigned int Dimensions>
 MultiDimRange<T, Dimensions>::iterator::iterator(const MultiDimRange::iterator &other) {
@@ -156,6 +164,7 @@ MultiDimRange<T, Dimensions>::iterator::iterator(const MultiDimRange::iterator &
     startValue = other.startValue;
     endValue = other.endValue;
     step = other.step;
+    comp = other.comp;
 }
 
 template<typename T, unsigned int Dimensions>
@@ -165,6 +174,7 @@ MultiDimRange<T, Dimensions>::iterator::operator=(const MultiDimRange::iterator 
     startValue = other.startValue;
     endValue = other.endValue;
     step = other.step;
+    comp = other.comp;
 }
 
 template<typename T, unsigned int Dimensions>
@@ -189,22 +199,22 @@ typename MultiDimRange<T, Dimensions>::value_type *MultiDimRange<T, Dimensions>:
 
 template<typename T, unsigned int Dimensions>
 typename MultiDimRange<T, Dimensions>::iterator &MultiDimRange<T, Dimensions>::iterator::operator++() {
-    bool isLast = false;
+    bool isLast = true;
     for (unsigned int i = 0; i < Dimensions; ++i) {
-        if (value[i] < endValue[i] - 1) {
+        //if (value[i] < endValue[i] - 1) {
+        if (comp[i](value[i], endValue[i] - 1)) {
             value[i] += step[i];
             if (i > 0) {
                 for (unsigned int j = 0; j < i; ++j)
                     value[j] = startValue[j];
             }
-            if (value[i] > endValue[i]) {
+            //if (value[i] > endValue[i]) {
+            if (!comp[i](value[i], endValue[i])) {
                 value[i] = endValue[i];
                 continue;
             }
             isLast = false;
             break;
-        } else {
-            isLast = true;
         }
     }
     if (isLast) {

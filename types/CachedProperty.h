@@ -1,4 +1,4 @@
-#include <utility>
+
 
 //
 // Created by Petr on 18.11.2019.
@@ -6,6 +6,9 @@
 
 #ifndef UTILITIES_CACHEDPROPERTY_H
 #define UTILITIES_CACHEDPROPERTY_H
+
+#include <functional>
+#include <utility>
 
 template<typename T, bool LazyInit = true>
 class CachedProperty {

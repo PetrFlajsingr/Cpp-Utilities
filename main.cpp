@@ -105,29 +105,26 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
             .setText(String{text == nullptr ? "" : text});
 }
 
+
 int main() {
-    //static_assert(std::is_same_v<decltype( range('a', 'z')), int>);
-    std::vector<float> arr{0.1, 0.2, 0.5, 0.8, 1, 1, 1};
-    std::vector<std::string> yah{"a", "b", "c", "dd", "ee", "adfds"};
+    constexpr int reps = 1000000;
+    auto start = now<std::chrono::milliseconds>();
+    int sum = 0;
+    for (int i : range(0, reps)) {
+        sum += i;
+    }
+    auto end = now<std::chrono::milliseconds>();
+    print(sum);
+    print((end - start).count());
 
-    for (auto[index, value, value2] : zip(range(150), arr, yah)) {
-        print(index, ": ", value, " ", value2);
+    start = now<std::chrono::milliseconds>();
+    sum = 0;
+    for (int i = 0; i < reps; ++i) {
+        sum += i;
     }
-
-    for (auto[x, y] : range<int, 2>({5, 0}, {0, 200}, {-1, 11})) {
-        print(x, "x", y);
-    }
-    return 0;
-    for (auto[x, y] : range<int, 2>({5, 2})) {
-        print(x, "x", y);
-    }
-    for (auto[x, y, z] : range<int, 3>({0, 0, 10}, {5, 2, 15}, {1, 1, 1})) {
-        print(x, "x", y, "x", z);
-    }
-    print("________________");
-    for (auto[x, y] : range<float, 2>({0.1, 0}, {5, 2}, {3, 1})) {
-        print(x, "x", y);
-    }
+    end = now<std::chrono::milliseconds>();
+    print(sum);
+    print((end - start).count());
     /*
     observable::value<int> a{11};
     observable::value<int> b{1212};

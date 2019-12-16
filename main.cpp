@@ -106,26 +106,30 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 }
 
 
-int main() {
-    constexpr int reps = 1000000;
-    constexpr auto t = range(0, reps);
-    auto start = now<std::chrono::milliseconds>();
-    int sum = 0;
-    for (int i : range(0, reps)) {
-        sum += i;
-    }
-    auto end = now<std::chrono::milliseconds>();
-    print(sum);
-    print((end - start).count());
+struct Test {
+    std::vector<int> data;
+    std::size_t width;
+    std::size_t height;
 
-    start = now<std::chrono::milliseconds>();
-    sum = 0;
-    for (int i = 0; i < reps; ++i) {
-        sum += i;
+    int operator()(std::size_t x) {
+        return data[x];
     }
-    end = now<std::chrono::milliseconds>();
-    print(sum);
-    print((end - start).count());
+
+    int operator()(std::size_t x, std::size_t y) {
+        const auto index = y * width + x;
+        return data[index];
+    }
+};
+
+int main() {
+    Test t;
+    auto r = range(5);
+    t.data.insert(t.data.end(), r.begin(), r.end());
+
+    for (auto d : t.data) {
+        print(d);
+    }
+
     /*
     observable::value<int> a{11};
     observable::value<int> b{1212};

@@ -59,7 +59,6 @@ typename Range<T>::iterator &Range<T>::iterator::operator++() {
   } else if (!up && value < endValue) {
     value = endValue;
   }
-
   return *this;
 }
 
@@ -201,14 +200,12 @@ template<typename T, unsigned int Dimensions>
 typename MultiDimRange<T, Dimensions>::iterator &MultiDimRange<T, Dimensions>::iterator::operator++() {
   bool isLast = true;
   for (unsigned int i = 0; i < Dimensions; ++i) {
-    //if (value[i] < endValue[i] - 1) {
     if (comp[i](value[i], endValue[i] - 1)) {
       value[i] += step[i];
       if (i > 0) {
         for (unsigned int j = 0; j < i; ++j)
           value[j] = startValue[j];
       }
-      //if (value[i] > endValue[i]) {
       if (!comp[i](value[i], endValue[i])) {
         value[i] = endValue[i];
         continue;

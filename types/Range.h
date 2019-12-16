@@ -15,6 +15,10 @@ class Range {
 public:
     struct iterator {
         using value_type = T;
+        using reference = T &;
+        using pointer = T *;
+        using difference_type = int;
+        using iterator_category = std::input_iterator_tag;
 
         constexpr iterator() = default;
 
@@ -66,6 +70,12 @@ public:
     using value_type = container_type<T>;
 
     struct iterator {
+        using value_type = value_type;
+        using reference = value_type &;
+        using pointer = value_type *;
+        using difference_type = int;
+        using iterator_category = std::input_iterator_tag;
+
         iterator() = default;
 
         iterator(value_type value,

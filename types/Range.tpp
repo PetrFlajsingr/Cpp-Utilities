@@ -1,6 +1,4 @@
 
-#include "Range.h"
-
 template<typename T>
 template<typename U, typename V>
 constexpr Range<T>::Range(T start, U end, V step)
@@ -73,37 +71,38 @@ typename Range<T>::iterator Range<T>::iterator::operator++(int) {
 }
 
 template<typename T, typename U, typename V>
-Range<T> MakeRange::until(T start, U end, V step) {
-  assert(step >= V{0});
-  assert(start <= end);
-  return Range{start, end, step};
+constexpr Range<T> MakeRange::until(T start, U end, V step) {
+    assert(step >= V{0});
+    assert(start <= end);
+    return Range{start, end, step};
 }
 
 template<typename T, typename U, typename V>
-Range<T> MakeRange::to(T start, U end, V step) {
-  assert(step >= V{0});
-  assert(start <= end);
-  return Range{start, end + 1, step};
+constexpr Range<T> MakeRange::to(T start, U end, V step) {
+    assert(step >= V{0});
+    assert(start <= end);
+    return Range{start, end + 1, step};
 }
 
 template<typename T, typename U, typename V>
-Range<T> MakeRange::downTo(T start, U end, V step) {
-  assert(step >= V{0});
-  assert(start >= end);
-  return Range{start, end - 1, -step};
+constexpr Range<T> MakeRange::downTo(T start, U end, V step) {
+    assert(step >= V{0});
+    assert(start >= end);
+    return Range{start, end - 1, -step};
 }
 
 template<typename T, typename U, typename V>
-Range<T> MakeRange::downUntil(T start, U end, V step) {
-  assert(step >= V{0});
-  assert(start >= end);
-  return Range{start, end, -step};
+constexpr Range<T> MakeRange::downUntil(T start, U end, V step) {
+    assert(step >= V{0});
+    assert(start >= end);
+    return Range{start, end, -step};
 }
 
 template<typename T, typename U, typename V, typename ValueType>
 constexpr Range<ValueType> MakeRange::range(T start, U end, V step) {
-    assert(static_cast<ValueType>(step) != static_cast<ValueType>(V{0}));
-    if (static_cast<ValueType>(step) < static_cast<ValueType>(V{0})) {
+    constexpr auto zeroVal = static_cast<ValueType>(V{0});
+    assert(static_cast<ValueType>(step) != zeroVal);
+    if (static_cast<ValueType>(step) < zeroVal) {
         assert(static_cast<ValueType>(start) >= static_cast<ValueType>(end));
         return Range<ValueType>{static_cast<ValueType>(start), static_cast<ValueType>(end - 1),
                                 static_cast<ValueType>(step)};

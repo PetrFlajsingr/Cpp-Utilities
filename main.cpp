@@ -108,6 +108,7 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 int main() {
     constexpr int reps = 1000000;
+    constexpr auto t = range(0, reps);
     auto start = now<std::chrono::milliseconds>();
     int sum = 0;
     for (int i : range(0, reps)) {

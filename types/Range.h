@@ -113,16 +113,16 @@ private:
 
 namespace MakeRange {
     template<typename T, typename U = T, typename V = T>
-    Range<T> until(T start, U end, V step = T{1});
+    constexpr Range<T> until(T start, U end, V step = T{1});
 
     template<typename T, typename U = T, typename V = T>
-    Range<T> to(T start, U end, V step = T{1});
+    constexpr Range<T> to(T start, U end, V step = T{1});
 
     template<typename T, typename U = T, typename V = T>
-    Range<T> downTo(T start, U end, V step = T{1});
+    constexpr Range<T> downTo(T start, U end, V step = T{1});
 
     template<typename T, typename U = T, typename V = T>
-    Range<T> downUntil(T start, U end, V step = T{1});
+    constexpr Range<T> downUntil(T start, U end, V step = T{1});
 
     template<typename T, typename U, typename V = T,
             typename ValueType =

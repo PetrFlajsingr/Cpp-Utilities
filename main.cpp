@@ -125,9 +125,11 @@ int main() {
     Test t;
     auto r = range(5);
     t.data.insert(t.data.end(), r.begin(), r.end());
-
     for (auto d : t.data) {
         print(d);
+    }
+    for (auto a : r) {
+        print(a);
     }
 
     /*

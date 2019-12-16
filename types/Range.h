@@ -17,12 +17,13 @@ public:
         using value_type = T;
         using reference = T &;
         using pointer = T *;
+        using const_pointer = const T *;
         using difference_type = int;
         using iterator_category = std::input_iterator_tag;
 
         constexpr iterator() = default;
 
-        constexpr iterator(T value, T step, T endValue, bool up);
+        constexpr iterator(value_type value, value_type step, value_type endValue, bool up);
 
         constexpr iterator(const iterator &other);
 
@@ -32,9 +33,9 @@ public:
 
         bool operator!=(const iterator &rhs) const;
 
-        T operator*() const;
+        value_type operator*() const;
 
-        T *operator->();
+        const_pointer operator->();
 
         iterator &operator++();
 

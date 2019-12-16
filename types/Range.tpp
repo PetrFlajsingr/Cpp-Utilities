@@ -15,7 +15,7 @@ constexpr typename Range<T>::iterator Range<T>::end() const {
 }
 
 template<typename T>
-constexpr Range<T>::iterator::iterator(T value, T step, T endValue, bool up)
+constexpr Range<T>::iterator::iterator(value_type value, value_type step, value_type endValue, bool up)
         : value(value), step(step), endValue(endValue), up(up) {}
 
 template<typename T>
@@ -49,7 +49,7 @@ template<typename T>
 T Range<T>::iterator::operator*() const { return value; }
 
 template<typename T>
-T *Range<T>::iterator::operator->() { return &value; }
+typename Range<T>::iterator::const_pointer Range<T>::iterator::operator->() { return &value; }
 
 template<typename T>
 typename Range<T>::iterator &Range<T>::iterator::operator++() {

@@ -33,6 +33,21 @@ template <typename F>
 void Leaf<T, ChildCount>::traverseBreadthFirst(F &&callable) {
   detail::traverseBreadthFirstImpl(this, callable);
 }
+template <typename T, unsigned int ChildCount>
+template <typename F, unsigned int C, typename>
+void Leaf<T, ChildCount>::preorder(F &&callable) {
+  detail::preorderImpl(this, callable);
+}
+template <typename T, unsigned int ChildCount>
+template <typename F, unsigned int C, typename>
+void Leaf<T, ChildCount>::inorder(F &&callable) {
+  detail::preorderImpl(this, callable);
+}
+template <typename T, unsigned int ChildCount>
+template <typename F, unsigned int C, typename>
+void Leaf<T, ChildCount>::postorder(F &&callable) {
+  detail::preorderImpl(this, callable);
+}
 
 template <typename T, unsigned int ChildCount> Node<T, ChildCount>::Node() {
   std::generate(children.begin(), children.end(), [] { return nullptr; });

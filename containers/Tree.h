@@ -14,7 +14,11 @@ enum class NodeType { Leaf, Node };
 
 template <typename T, unsigned int ChildCount> class Leaf;
 template <typename T, unsigned int ChildCount> class Node;
-namespace detail {
+namespace detail{
+template <unsigned int Count>
+static constexpr bool is_binary_tree = Count == 2;
+template <unsigned int Count>
+using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
 template <typename T, unsigned int ChildCount, typename F>
 void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable);
 template <typename T, unsigned int ChildCount, typename F>
@@ -43,18 +47,55 @@ public:
   Leaf &operator=(const Leaf &other);
   Leaf(Leaf &&other) noexcept;
   Leaf &operator=(Leaf &&other) noexcept;
-
+  /**
+   * @return value stored in node
+   */
   reference_type operator*() { return value; }
+  /**
+   * @return value stored in node
+   */
   pointer_type operator->() { return &value; }
-
+  /**
+   * @return value stored in node
+   */
   const_reference_type getValue() const { return value; }
   void setValue(value_type value) { Leaf::value = value; }
-
+  /**
+   * For safe casting without dynamic cast.
+   */
   [[nodiscard]] virtual NodeType getType() const { return NodeType::Leaf; }
 
+  /**
+   * @see Tree::traverseDepthFirst
+   */
   template <typename F> void traverseDepthFirst(F &&callable);
+  /**
+   * @see Tree::traverseDepthFirstIf
+   */
   template <typename F> void traverseDepthFirstIf(F &&callable);
+  /**
+   * @see Tree::traverseBreadthFirst
+   */
   template <typename F> void traverseBreadthFirst(F &&callable);
+
+  /**
+   * @see Tree::preorder
+   */
+  template <typename F, unsigned int C = ChildCount,
+      typename = detail::enabled_for_binary<C>>
+  void preorder(F &&callable);
+  /**
+   * @see Tree::inorder
+   */
+  template <typename F, unsigned int C = ChildCount,
+      typename = detail::enabled_for_binary<C>>
+  void inorder(F &&callable);
+  /**
+   * @see Tree::postorder
+   */
+  template <typename F, unsigned int C = ChildCount,
+      typename = detail::enabled_for_binary<C>>
+  void postorder(F &&callable);
 
   virtual ~Leaf() = default;
 
@@ -90,6 +131,9 @@ public:
   Node(Node &&other) noexcept;
   Node &operator=(Node &&other) noexcept;
 
+  /**
+   * @return false if child at index is nullptr
+   */
   bool hasChildAtIndex(std::size_t index);
   Child &setChildAtIndex(std::size_t index, NodeType nodeType);
   void setChildrenValues(const_reference_type value, NodeType nodeType);
@@ -107,11 +151,6 @@ private:
   Children children;
 };
 template <typename T, unsigned int ChildCount> class Tree {
-  template <unsigned int Count>
-  static constexpr bool is_binary_tree = Count == 2;
-  template <unsigned int Count>
-  using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
-
 public:
   using Root = Node<T, ChildCount>;
   using value_type = typename Root::value_type;
@@ -122,28 +161,38 @@ public:
 
   Tree() = default;
   explicit Tree(value_type rootValue);
-
+  /**
+   * Create a tree with given depth. Each node/leaf is initialised with the give value.
+   * @param depth depth of tree (root only is 1)
+   * @param initValue value to copy to each node/leaf
+   */
   static Tree BuildTree(std::size_t depth, const_reference_type initValue);
 
   Root &getRoot() { return *root; }
 
-  // root->all of his children recursively
+  /**
+   * Call F for a value of each node in depth first order.
+   */
   template <typename F> void traverseDepthFirst(F &&callable);
-
+  /**
+   * Call F for a value of each node in breadth first order.
+   */
   template <typename F> void traverseBreadthFirst(F &&callable);
-
+  /**
+   * Call F for a value of each node in depth first order.
+   * If F returns false then this branch of tree will no longer be
+   * iterated through.
+   */
   template <typename F> void traverseDepthFirstIf(F &&callable);
 
   template <typename F, unsigned int C = ChildCount,
-            typename = enabled_for_binary<C>>
+            typename = detail::enabled_for_binary<C>>
   void preorder(F &&callable);
-
   template <typename F, unsigned int C = ChildCount,
-            typename = enabled_for_binary<C>>
+            typename = detail::enabled_for_binary<C>>
   void inorder(F &&callable);
-
   template <typename F, unsigned int C = ChildCount,
-            typename = enabled_for_binary<C>>
+            typename = detail::enabled_for_binary<C>>
   void postorder(F &&callable);
 
 private:

@@ -112,27 +112,32 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 int main() {
   constexpr auto childCount = 2;
-  Tree<float, childCount> tree{0};
+  Tree<char, childCount> tree{0};
   for (auto i : range(childCount)) {
-    tree.getRoot().setChildAtIndex(i, NodeType::Node).setValue(i + 1);
+    tree.getRoot().setChildAtIndex(i, NodeType::Node).setValue(i + 1 + 'a');
   }
   for (auto &child : tree.getRoot().getChildren()) {
-    auto &node = dynamic_cast<Node<float, childCount> &>(*child);
+    auto &node = dynamic_cast<Node<char, childCount> &>(*child);
     for (auto i : range(childCount)) {
-      node.setChildAtIndex(i, NodeType::Node).setValue((i + 1) * 10);
+      node.setChildAtIndex(i, NodeType::Node).setValue((i + 1) * 10 + 'a');
     }
     for (auto &c2 : node.getChildren()) {
-      auto &node = dynamic_cast<Node<float, childCount> &>(*c2);
+      auto &node = dynamic_cast<Node<char, childCount> &>(*c2);
       for (auto i : range(childCount)) {
-        node.setChildAtIndex(i, NodeType::Leaf).setValue((i + 1) * 100);
+        node.setChildAtIndex(i, NodeType::Leaf).setValue((i + 1) * 100 + 'a');
       }
     }
   }
 
-  tree.postorder([](auto value) {
+
+  tree.inorder([](auto value) {
     print(value);
   });
 
+
+  tree.getRoot().leftChild().inorder([](auto value) {
+    print(value);
+  });
 
     /*
     observable::value<int> a{11};

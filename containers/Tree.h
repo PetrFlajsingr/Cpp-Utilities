@@ -38,6 +38,24 @@ void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
 }
 
 template <typename T, unsigned int ChildCount, typename F>
+void traverseDepthFirstIfImpl(Leaf<T, ChildCount> *node, F &callable) {
+  if (node == nullptr) {
+    return;
+  }
+  const bool shouldContinue = callable(node->getValue());
+  if (node->getType() == NodeType::Leaf || !shouldContinue) {
+    return;
+  }
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCDFAInspection"
+  auto notLeafNode = reinterpret_cast<Node<T, ChildCount>*>(node);
+#pragma clang diagnostic pop
+  for (auto &child : notLeafNode->getChildren()) {
+    traverseDepthFirstIfImpl(child.get(), callable);
+  }
+}
+
+template <typename T, unsigned int ChildCount, typename F>
 void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
   if (node == nullptr) {
     return;
@@ -105,6 +123,21 @@ public:
 
   [[nodiscard]] virtual NodeType getType() const {
     return NodeType::Leaf;
+  }
+
+  template <typename F>
+  void traverseDepthFirst(F &&callable) {
+    detail::traverseDepthFirstImpl(this, callable);
+  }
+
+  template <typename F>
+  void traverseDepthFirstIf(F &&callable) {
+    detail::traverseDepthFirstIfImpl(this, callable);
+  }
+
+  template <typename F>
+  void traverseBreadthFirst(F &&callable) {
+    detail::traverseBreadthFirstImpl(this, callable);
   }
 
   virtual ~Leaf() = default;
@@ -175,16 +208,6 @@ public:
 
   [[nodiscard]] NodeType getType() const override { return NodeType::Node; }
 
-  template <typename F>
-  void traverseDepthFirst(F &&callable) {
-    detail::traverseDepthFirstImpl(this, callable);
-  }
-
-  template <typename F>
-  void traverseBreadthFirst(F &&callable) {
-    detail::traverseBreadthFirstImpl(this, callable);
-  }
-
 private:
   Children children;
 };
@@ -217,6 +240,11 @@ public:
   template <typename F>
   void traverseBreadthFirst(F &&callable) {
     root->traverseBreadthFirst(callable);
+  }
+
+  template <typename F>
+  void traverseDepthFirstIf(F &&callable) {
+    root->traverseDepthFirstIf(callable);
   }
 
 private:

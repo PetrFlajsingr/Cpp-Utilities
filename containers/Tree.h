@@ -2,6 +2,8 @@
 // Created by petr on 12/21/19.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCDFAInspection"
 #ifndef UTILITIES_TREE_H
 #define UTILITIES_TREE_H
 
@@ -11,117 +13,20 @@
 enum class NodeType { Leaf, Node };
 
 template <typename T, unsigned int ChildCount> class Leaf;
-
 template <typename T, unsigned int ChildCount> class Node;
-
 namespace detail {
 template <typename T, unsigned int ChildCount, typename F>
-void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
-  if (node == nullptr) {
-    return;
-  }
-  callable(node->getValue());
-  if (node->getType() == NodeType::Leaf) {
-    return;
-  }
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCDFAInspection"
-  auto notLeafNode = reinterpret_cast<Node<T, ChildCount> *>(node);
-#pragma clang diagnostic pop
-  for (auto &child : notLeafNode->getChildren()) {
-    traverseDepthFirstImpl(child.get(), callable);
-  }
-}
-
+void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable);
 template <typename T, unsigned int ChildCount, typename F>
-void traverseDepthFirstIfImpl(Leaf<T, ChildCount> *node, F &callable) {
-  if (node == nullptr) {
-    return;
-  }
-  const bool shouldContinue = callable(node->getValue());
-  if (node->getType() == NodeType::Leaf || !shouldContinue) {
-    return;
-  }
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCDFAInspection"
-  auto notLeafNode = reinterpret_cast<Node<T, ChildCount> *>(node);
-#pragma clang diagnostic pop
-  for (auto &child : notLeafNode->getChildren()) {
-    traverseDepthFirstIfImpl(child.get(), callable);
-  }
-}
-
+void traverseDepthFirstIfImpl(Leaf<T, ChildCount> *node, F &callable);
 template <typename T, unsigned int ChildCount, typename F>
-void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
-  if (node == nullptr) {
-    return;
-  }
-  if (node->getType() == NodeType::Leaf) {
-    return;
-  }
-
-  std::queue<Node<T, ChildCount> *> queue;
-  queue.push(reinterpret_cast<Node<T, ChildCount> *>(node));
-
-  while (!queue.empty()) {
-    auto currentNode = queue.front();
-    queue.pop();
-    if (currentNode == nullptr) {
-      continue;
-    }
-    callable(currentNode->getValue());
-    if (currentNode->getType() == NodeType::Leaf) {
-      continue;
-    }
-    for (auto &child : currentNode->getChildren()) {
-      queue.push(reinterpret_cast<Node<T, ChildCount> *>(child.get()));
-    }
-  }
-}
-
+void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable);
 template <typename T, typename F>
-void preorderImpl(Leaf<T, 2> *node, F &&callable) {
-  if (node == nullptr) {
-    return;
-  }
-  callable(node->getValue());
-  if (node->getType() == NodeType::Leaf) {
-    return;
-  }
-  auto notLeafNode = reinterpret_cast<Node<T, 2> *>(node);
-  preorderImpl(&notLeafNode->leftChild(), callable);
-  preorderImpl(&notLeafNode->rightChild(), callable);
-}
-
+void preorderImpl(Leaf<T, 2> *node, F &&callable);
 template <typename T, typename F>
-void inorderImpl(Leaf<T, 2> *node, F &&callable) {
-  if (node == nullptr) {
-    return;
-  }
-  auto notLeafNode = reinterpret_cast<Node<T, 2> *>(node);
-  if (node->getType() != NodeType::Leaf) {
-    preorderImpl(&notLeafNode->leftChild(), callable);
-  }
-  callable(node->getValue());
-  if (node->getType() != NodeType::Leaf) {
-    preorderImpl(&notLeafNode->rightChild(), callable);
-  }
-}
-
+void inorderImpl(Leaf<T, 2> *node, F &&callable);
 template <typename T, typename F>
-void postorderImpl(Leaf<T, 2> *node, F &&callable) {
-  if (node == nullptr) {
-    return;
-  }
-  auto notLeafNode = reinterpret_cast<Node<T, 2> *>(node);
-  if (node->getType() != NodeType::Leaf) {
-    preorderImpl(&notLeafNode->leftChild(), callable);
-  }
-  if (node->getType() != NodeType::Leaf) {
-    preorderImpl(&notLeafNode->rightChild(), callable);
-  }
-  callable(node->getValue());
-}
+void postorderImpl(Leaf<T, 2> *node, F &&callable);
 } // namespace detail
 
 template <typename T, unsigned int ChildCount> class Leaf {
@@ -133,23 +38,13 @@ public:
   using const_reference_type = const T &;
 
   Leaf() = default;
-  explicit Leaf(value_type value) : value(std::move(value)) {}
-  Leaf(const Leaf &other) : value(other.value) {}
-  Leaf &operator=(const Leaf &other) {
-    if (&other == this) {
-      return *this;
-    }
-    value = other.value;
-    return *this;
-  }
-  Leaf(Leaf &&other) noexcept : value(std::move(other.value)) {}
-  Leaf &operator=(Leaf &&other) noexcept {
-    value = std::move(other.value);
-    return *this;
-  }
+  explicit Leaf(value_type value);
+  Leaf(const Leaf &other);
+  Leaf &operator=(const Leaf &other);
+  Leaf(Leaf &&other) noexcept;
+  Leaf &operator=(Leaf &&other) noexcept;
 
   reference_type operator*() { return value; }
-
   pointer_type operator->() { return &value; }
 
   const_reference_type getValue() const { return value; }
@@ -157,17 +52,9 @@ public:
 
   [[nodiscard]] virtual NodeType getType() const { return NodeType::Leaf; }
 
-  template <typename F> void traverseDepthFirst(F &&callable) {
-    detail::traverseDepthFirstImpl(this, callable);
-  }
-
-  template <typename F> void traverseDepthFirstIf(F &&callable) {
-    detail::traverseDepthFirstIfImpl(this, callable);
-  }
-
-  template <typename F> void traverseBreadthFirst(F &&callable) {
-    detail::traverseBreadthFirstImpl(this, callable);
-  }
+  template <typename F> void traverseDepthFirst(F &&callable);
+  template <typename F> void traverseDepthFirstIf(F &&callable);
+  template <typename F> void traverseBreadthFirst(F &&callable);
 
   virtual ~Leaf() = default;
 
@@ -196,78 +83,29 @@ public:
 
   using Base::operator*;
   using Base::operator->;
-  Node() {
-    std::generate(children.begin(), children.end(), [] { return nullptr; });
-  }
-  explicit Node(value_type value) : Leaf<T, ChildCount>(value) {
-    std::generate(children.begin(), children.end(), [] { return nullptr; });
-  }
-  Node(const Node &other)
-      : Leaf<T, ChildCount>(other), children(other.children) {}
-  Node &operator=(const Node &other) {
-    if (&other == this) {
-      return *this;
-    }
-    *this = Leaf<T, ChildCount>::operator=(other);
-    children = other.children;
-    return *this;
-  }
-  Node(Node &&other) noexcept
-      : Leaf<T, ChildCount>(other), children(std::move(other.children)) {}
-  Node &operator=(Node &&other) noexcept {
-    *this = Leaf<T, ChildCount>::operator=(other);
-    children = std::move(other.children);
-    return *this;
-  }
+  Node();
+  explicit Node(value_type value);
+  Node(const Node &other);
+  Node &operator=(const Node &other);
+  Node(Node &&other) noexcept;
+  Node &operator=(Node &&other) noexcept;
 
-  bool hasChildAtIndex(std::size_t index) {
-    assert(index < ChildCount);
-    return children[index] != nullptr;
-  }
-
-  Child &setChildAtIndex(std::size_t index, NodeType nodeType) {
-    if (nodeType == NodeType::Leaf) {
-      children[index] = std::make_unique<Leaf<T, ChildCount>>();
-    } else if (nodeType == NodeType::Node) {
-      children[index] = std::make_unique<Node>();
-    }
-    return *children[index];
-  }
-
-  void setChildrenValues(const_reference_type value, NodeType nodeType) {
-    if (nodeType == NodeType::Leaf) {
-      std::generate(children.begin(), children.end(), [&value] {
-        return std::move(std::make_unique<Leaf<T, ChildCount>>(value));
-      });
-    } else if (nodeType == NodeType::Node) {
-      std::generate(children.begin(), children.end(), [&value] {
-        return std::make_unique<Node<T, ChildCount>>(value);
-      });
-    }
-  }
-
-  Child &childAtIndex(std::size_t index) {
-    assert(index < ChildCount);
-    return *children[index];
-  }
-
+  bool hasChildAtIndex(std::size_t index);
+  Child &setChildAtIndex(std::size_t index, NodeType nodeType);
+  void setChildrenValues(const_reference_type value, NodeType nodeType);
+  Child &childAtIndex(std::size_t index);
   Children &getChildren() { return children; }
 
   [[nodiscard]] NodeType getType() const override { return NodeType::Node; }
 
   template <unsigned int C = ChildCount, typename = enabled_for_binary<C>>
-  Child &leftChild() {
-    return *children[0];
-  }
+  Child &leftChild();
   template <unsigned int C = ChildCount, typename = enabled_for_binary<C>>
-  Child &rightChild() {
-    return *children[1];
-  }
+  Child &rightChild();
 
 private:
   Children children;
 };
-
 template <typename T, unsigned int ChildCount> class Tree {
   template <unsigned int Count>
   static constexpr bool is_binary_tree = Count == 2;
@@ -283,66 +121,41 @@ public:
   using const_reference_type = typename Root::const_reference_type;
 
   Tree() = default;
-  explicit Tree(value_type rootValue)
-      : root(std::make_unique<Root>(rootValue)) {}
+  explicit Tree(value_type rootValue);
 
-  static Tree BuildTree(std::size_t depth, const_reference_type initValue) {
-    Tree result{initValue};
-    initChildren(result.root.get(), initValue, depth - 1);
-    return result;
-  }
+  static Tree BuildTree(std::size_t depth, const_reference_type initValue);
 
   Root &getRoot() { return *root; }
 
   // root->all of his children recursively
-  template <typename F> void traverseDepthFirst(F &&callable) {
-    root->traverseDepthFirst(callable);
-  }
+  template <typename F> void traverseDepthFirst(F &&callable);
 
-  template <typename F> void traverseBreadthFirst(F &&callable) {
-    root->traverseBreadthFirst(callable);
-  }
+  template <typename F> void traverseBreadthFirst(F &&callable);
 
-  template <typename F> void traverseDepthFirstIf(F &&callable) {
-    root->traverseDepthFirstIf(callable);
-  }
+  template <typename F> void traverseDepthFirstIf(F &&callable);
 
   template <typename F, unsigned int C = ChildCount,
             typename = enabled_for_binary<C>>
-  void preorder(F &&callable) {
-    detail::preorderImpl(root.get(), callable);
-  }
+  void preorder(F &&callable);
 
   template <typename F, unsigned int C = ChildCount,
             typename = enabled_for_binary<C>>
-  void inorder(F &&callable) {
-    detail::inorderImpl(root.get(), callable);
-  }
+  void inorder(F &&callable);
 
   template <typename F, unsigned int C = ChildCount,
             typename = enabled_for_binary<C>>
-  void postorder(F &&callable) {
-    detail::postorderImpl(root.get(), callable);
-  }
+  void postorder(F &&callable);
 
 private:
   std::unique_ptr<Root> root;
 
   static void initChildren(Node<T, ChildCount> *node,
-                           const_reference_type initValue, std::size_t depth) {
-    NodeType nodeType = NodeType::Node;
-    if (depth == 1) {
-      nodeType = NodeType::Leaf;
-    }
-    node->setChildrenValues(initValue, nodeType);
-    if (nodeType == NodeType::Leaf) {
-      return;
-    }
-    for (auto &child : node->getChildren()) {
-      initChildren(reinterpret_cast<Node<T, ChildCount> *>(child.get()),
-                   initValue, depth - 1);
-    }
-  }
+                           const_reference_type initValue, std::size_t depth);
 };
 
+#include "containers/detail/Tree.tpp"
+#include "containers/detail/Tree_detail.tpp"
+#include "containers/detail/Tree_node.tpp"
 #endif // UTILITIES_TREE_H
+
+#pragma clang diagnostic pop

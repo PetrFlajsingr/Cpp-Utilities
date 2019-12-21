@@ -8,6 +8,7 @@
 #include <iostream>
 #include <utility>
 #include "types/Zip.h"
+#include "containers/Tree.h"
 
 using String = StringDecorator<std::string>;
 
@@ -106,31 +107,23 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 }
 
 
-struct Test {
-    std::vector<int> data;
-    std::size_t width;
-    std::size_t height;
 
-    int operator()(std::size_t x) {
-        return data[x];
-    }
 
-    int operator()(std::size_t x, std::size_t y) {
-        const auto index = y * width + x;
-        return data[index];
-    }
-};
 
 int main() {
-    Test t;
-    auto r = range(5);
-    t.data.insert(t.data.end(), r.begin(), r.end());
-    for (auto d : t.data) {
-        print(d);
+  Tree<float, 3> tree{0};
+  for (auto i : range(3)) {
+    tree.getRoot().setChildAtIndex(i, NodeType::Node).setValue(i);
+  }
+  for (auto &child : tree.getRoot().getChildren()) {
+    auto &node = dynamic_cast<Node<float, 3> &>(*child);
+    for (auto i : range(3)) {
+      node.setChildAtIndex(i, NodeType::Leaf).setValue(i * 10);
     }
-    for (auto a : r) {
-        print(a);
-    }
+  }
+
+  print(tree.getRoot().getValue());
+
 
     /*
     observable::value<int> a{11};

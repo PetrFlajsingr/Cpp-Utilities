@@ -71,7 +71,6 @@ public:
     using value_type = container_type<T>;
 
     struct iterator {
-        using value_type = value_type;
         using reference = value_type &;
         using pointer = value_type *;
         using difference_type = int;

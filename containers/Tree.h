@@ -78,6 +78,50 @@ void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
     }
   }
 }
+
+template <typename T, typename F>
+void preorderImpl(Leaf<T, 2> *node, F &&callable) {
+  if (node == nullptr) {
+    return;
+  }
+  callable(node->getValue());
+  if (node->getType() == NodeType::Leaf) {
+    return;
+  }
+  auto notLeafNode = reinterpret_cast<Node<T, 2> *>(node);
+  preorderImpl(&notLeafNode->leftChild(), callable);
+  preorderImpl(&notLeafNode->rightChild(), callable);
+}
+
+template <typename T, typename F>
+void inorderImpl(Leaf<T, 2> *node, F &&callable) {
+  if (node == nullptr) {
+    return;
+  }
+  auto notLeafNode = reinterpret_cast<Node<T, 2> *>(node);
+  if (node->getType() != NodeType::Leaf) {
+    preorderImpl(&notLeafNode->leftChild(), callable);
+  }
+  callable(node->getValue());
+  if (node->getType() != NodeType::Leaf) {
+    preorderImpl(&notLeafNode->rightChild(), callable);
+  }
+}
+
+template <typename T, typename F>
+void postorderImpl(Leaf<T, 2> *node, F &&callable) {
+  if (node == nullptr) {
+    return;
+  }
+  auto notLeafNode = reinterpret_cast<Node<T, 2> *>(node);
+  if (node->getType() != NodeType::Leaf) {
+    preorderImpl(&notLeafNode->leftChild(), callable);
+  }
+  if (node->getType() != NodeType::Leaf) {
+    preorderImpl(&notLeafNode->rightChild(), callable);
+  }
+  callable(node->getValue());
+}
 } // namespace detail
 
 template <typename T, unsigned int ChildCount> class Leaf {
@@ -104,9 +148,9 @@ public:
     return *this;
   }
 
-  const_reference_type operator*() { return value; }
+  reference_type operator*() { return value; }
 
-  const_pointer_type operator->() { return value; }
+  pointer_type operator->() { return &value; }
 
   const_reference_type getValue() const { return value; }
   void setValue(value_type value) { Leaf::value = value; }
@@ -137,6 +181,11 @@ class Node : public Leaf<T, ChildCount> {
   using Child = Leaf<T, ChildCount>;
   using ChildPtr = std::unique_ptr<Leaf<T, ChildCount>>;
   using Children = std::array<ChildPtr, ChildCount>;
+
+  template <unsigned int Count>
+  static constexpr bool is_binary_tree = Count == 2;
+  template <unsigned int Count>
+  using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
 
 public:
   using value_type = typename Base::value_type;
@@ -185,6 +234,18 @@ public:
     return *children[index];
   }
 
+  void setChildrenValues(const_reference_type value, NodeType nodeType) {
+    if (nodeType == NodeType::Leaf) {
+      std::generate(children.begin(), children.end(), [&value] {
+        return std::move(std::make_unique<Leaf<T, ChildCount>>(value));
+      });
+    } else if (nodeType == NodeType::Node) {
+      std::generate(children.begin(), children.end(), [&value] {
+        return std::make_unique<Node<T, ChildCount>>(value);
+      });
+    }
+  }
+
   Child &childAtIndex(std::size_t index) {
     assert(index < ChildCount);
     return *children[index];
@@ -194,11 +255,25 @@ public:
 
   [[nodiscard]] NodeType getType() const override { return NodeType::Node; }
 
+  template <unsigned int C = ChildCount, typename = enabled_for_binary<C>>
+  Child &leftChild() {
+    return *children[0];
+  }
+  template <unsigned int C = ChildCount, typename = enabled_for_binary<C>>
+  Child &rightChild() {
+    return *children[1];
+  }
+
 private:
   Children children;
 };
 
 template <typename T, unsigned int ChildCount> class Tree {
+  template <unsigned int Count>
+  static constexpr bool is_binary_tree = Count == 2;
+  template <unsigned int Count>
+  using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
+
 public:
   using Root = Node<T, ChildCount>;
   using value_type = typename Root::value_type;
@@ -210,6 +285,12 @@ public:
   Tree() = default;
   explicit Tree(value_type rootValue)
       : root(std::make_unique<Root>(rootValue)) {}
+
+  static Tree BuildTree(std::size_t depth, const_reference_type initValue) {
+    Tree result{initValue};
+    initChildren(result.root.get(), initValue, depth - 1);
+    return result;
+  }
 
   Root &getRoot() { return *root; }
 
@@ -226,8 +307,42 @@ public:
     root->traverseDepthFirstIf(callable);
   }
 
+  template <typename F, unsigned int C = ChildCount,
+            typename = enabled_for_binary<C>>
+  void preorder(F &&callable) {
+    detail::preorderImpl(root.get(), callable);
+  }
+
+  template <typename F, unsigned int C = ChildCount,
+            typename = enabled_for_binary<C>>
+  void inorder(F &&callable) {
+    detail::inorderImpl(root.get(), callable);
+  }
+
+  template <typename F, unsigned int C = ChildCount,
+            typename = enabled_for_binary<C>>
+  void postorder(F &&callable) {
+    detail::postorderImpl(root.get(), callable);
+  }
+
 private:
   std::unique_ptr<Root> root;
+
+  static void initChildren(Node<T, ChildCount> *node,
+                           const_reference_type initValue, std::size_t depth) {
+    NodeType nodeType = NodeType::Node;
+    if (depth == 1) {
+      nodeType = NodeType::Leaf;
+    }
+    node->setChildrenValues(initValue, nodeType);
+    if (nodeType == NodeType::Leaf) {
+      return;
+    }
+    for (auto &child : node->getChildren()) {
+      initChildren(reinterpret_cast<Node<T, ChildCount> *>(child.get()),
+                   initValue, depth - 1);
+    }
+  }
 };
 
 #endif // UTILITIES_TREE_H

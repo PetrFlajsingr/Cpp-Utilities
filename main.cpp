@@ -111,7 +111,7 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 
 int main() {
-  constexpr auto childCount = 4;
+  constexpr auto childCount = 2;
   Tree<float, childCount> tree{0};
   for (auto i : range(childCount)) {
     tree.getRoot().setChildAtIndex(i, NodeType::Node).setValue(i + 1);
@@ -129,7 +129,7 @@ int main() {
     }
   }
 
-  tree.traverseDepthFirst([](auto value) {
+  tree.postorder([](auto value) {
     print(value);
   });
 

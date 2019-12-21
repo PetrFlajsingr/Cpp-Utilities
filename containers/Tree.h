@@ -5,11 +5,67 @@
 #ifndef UTILITIES_TREE_H
 #define UTILITIES_TREE_H
 
+#include <queue>
 #include <utility>
 
 enum class NodeType {
   Leaf, Node
 };
+
+template <typename T, unsigned int ChildCount>
+class Leaf;
+
+template <typename T, unsigned int ChildCount>
+class Node;
+
+namespace detail {
+template <typename T, unsigned int ChildCount, typename F>
+void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
+  if (node == nullptr) {
+    return;
+  }
+  callable(node->getValue());
+  if (node->getType() == NodeType::Leaf) {
+    return;
+  }
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCDFAInspection"
+  auto notLeafNode = reinterpret_cast<Node<T, ChildCount>*>(node);
+#pragma clang diagnostic pop
+  for (auto &child : notLeafNode->getChildren()) {
+    traverseDepthFirstImpl(child.get(), callable);
+  }
+}
+
+template <typename T, unsigned int ChildCount, typename F>
+void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
+  if (node == nullptr) {
+    return;
+  }
+  if (node->getType() == NodeType::Leaf) {
+    return;
+  }
+
+  std::queue<Node<T, ChildCount> *> queue;
+  queue.push(reinterpret_cast<Node<T, ChildCount> *>(node));
+
+  while (!queue.empty()) {
+    auto currentNode = queue.front();
+    queue.pop();
+    if (currentNode == nullptr) {
+      continue;
+    }
+    callable(currentNode->getValue());
+    if (currentNode->getType() == NodeType::Leaf) {
+      continue;
+    }
+    for (auto &child : currentNode->getChildren()) {
+      queue.push(reinterpret_cast<Node<T, ChildCount> *>(child.get()));
+    }
+  }
+
+}
+}
 
 template <typename T, unsigned int ChildCount>
 class Leaf {
@@ -119,9 +175,21 @@ public:
 
   [[nodiscard]] NodeType getType() const override { return NodeType::Node; }
 
+  template <typename F>
+  void traverseDepthFirst(F &&callable) {
+    detail::traverseDepthFirstImpl(this, callable);
+  }
+
+  template <typename F>
+  void traverseBreadthFirst(F &&callable) {
+    detail::traverseBreadthFirstImpl(this, callable);
+  }
+
 private:
   Children children;
 };
+
+
 
 template <typename T, unsigned int ChildCount>
 class Tree {
@@ -140,8 +208,21 @@ public:
     return *root;
   }
 
+  // root->all of his children recursively
+  template <typename F>
+  void traverseDepthFirst(F &&callable) {
+    root->traverseDepthFirst(callable);
+  }
+
+  template <typename F>
+  void traverseBreadthFirst(F &&callable) {
+    root->traverseBreadthFirst(callable);
+  }
+
 private:
   std::unique_ptr<Root> root;
 };
+
+
 
 #endif // UTILITIES_TREE_H

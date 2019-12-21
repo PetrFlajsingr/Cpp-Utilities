@@ -7623,7 +7623,7 @@ public:
 
     switch (source.type()) {
     case value_t::array: {
-      // first pass: traverse common elements
+      // first pass: traverseDepthFirst common elements
       std::size_t i = 0;
       while (i < source.size() and i < target.size()) {
         // recursive call to compare array values at index i
@@ -7634,7 +7634,7 @@ public:
       }
 
       // i now reached the end of at least one array
-      // in a second pass, traverse the remaining elements
+      // in a second pass, traverseDepthFirst the remaining elements
 
       // remove my remaining elements
       const auto end_index = static_cast<difference_type>(result.size());
@@ -7659,7 +7659,7 @@ public:
     }
 
     case value_t::object: {
-      // first pass: traverse this object's elements
+      // first pass: traverseDepthFirst this object's elements
       for (auto it = source.cbegin(); it != source.cend(); ++it) {
         // escape the key name to be used in a JSON patch
         const auto key = json_pointer::escape(it.key());
@@ -7675,7 +7675,7 @@ public:
         }
       }
 
-      // second pass: traverse other object's elements
+      // second pass: traverseDepthFirst other object's elements
       for (auto it = target.cbegin(); it != target.cend(); ++it) {
         if (source.find(it.key()) == source.end()) {
           // found a key that is not in this -> add it

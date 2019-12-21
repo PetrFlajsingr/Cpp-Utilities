@@ -111,18 +111,19 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 
 int main() {
-  Tree<float, 3> tree{0};
-  for (auto i : range(3)) {
-    tree.getRoot().setChildAtIndex(i, NodeType::Node).setValue(i);
+  Tree<float, 10> tree{0};
+  for (auto i : range(10)) {
+    tree.getRoot().setChildAtIndex(i, NodeType::Node).setValue(i + 1);
   }
   for (auto &child : tree.getRoot().getChildren()) {
-    auto &node = dynamic_cast<Node<float, 3> &>(*child);
-    for (auto i : range(3)) {
-      node.setChildAtIndex(i, NodeType::Leaf).setValue(i * 10);
+    auto &node = dynamic_cast<Node<float, 10> &>(*child);
+    for (auto i : range(10)) {
+      node.setChildAtIndex(i, NodeType::Leaf).setValue((i + 1) * 10);
     }
   }
 
-  print(tree.getRoot().getValue());
+  tree.traverseDepthFirst([](auto value) { print(value); });
+  tree.traverseBreadthFirst([](auto value) { print(value); });
 
 
     /*

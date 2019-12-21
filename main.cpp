@@ -119,13 +119,18 @@ int main() {
   for (auto &child : tree.getRoot().getChildren()) {
     auto &node = dynamic_cast<Node<float, childCount> &>(*child);
     for (auto i : range(childCount)) {
-      node.setChildAtIndex(i, NodeType::Leaf).setValue((i + 1) * 10);
+      node.setChildAtIndex(i, NodeType::Node).setValue((i + 1) * 10);
+    }
+    for (auto &c2 : node.getChildren()) {
+      auto &node = dynamic_cast<Node<float, childCount> &>(*c2);
+      for (auto i : range(childCount)) {
+        node.setChildAtIndex(i, NodeType::Leaf).setValue((i + 1) * 100);
+      }
     }
   }
 
-  tree.traverseDepthFirstIf([](auto value) {
+  tree.traverseDepthFirst([](auto value) {
     print(value);
-    return value < 2;
   });
 
 

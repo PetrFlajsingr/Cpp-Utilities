@@ -8,15 +8,11 @@
 #include <queue>
 #include <utility>
 
-enum class NodeType {
-  Leaf, Node
-};
+enum class NodeType { Leaf, Node };
 
-template <typename T, unsigned int ChildCount>
-class Leaf;
+template <typename T, unsigned int ChildCount> class Leaf;
 
-template <typename T, unsigned int ChildCount>
-class Node;
+template <typename T, unsigned int ChildCount> class Node;
 
 namespace detail {
 template <typename T, unsigned int ChildCount, typename F>
@@ -30,7 +26,7 @@ void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
   }
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCDFAInspection"
-  auto notLeafNode = reinterpret_cast<Node<T, ChildCount>*>(node);
+  auto notLeafNode = reinterpret_cast<Node<T, ChildCount> *>(node);
 #pragma clang diagnostic pop
   for (auto &child : notLeafNode->getChildren()) {
     traverseDepthFirstImpl(child.get(), callable);
@@ -48,7 +44,7 @@ void traverseDepthFirstIfImpl(Leaf<T, ChildCount> *node, F &callable) {
   }
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCDFAInspection"
-  auto notLeafNode = reinterpret_cast<Node<T, ChildCount>*>(node);
+  auto notLeafNode = reinterpret_cast<Node<T, ChildCount> *>(node);
 #pragma clang diagnostic pop
   for (auto &child : notLeafNode->getChildren()) {
     traverseDepthFirstIfImpl(child.get(), callable);
@@ -81,18 +77,16 @@ void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
       queue.push(reinterpret_cast<Node<T, ChildCount> *>(child.get()));
     }
   }
-
 }
-}
+} // namespace detail
 
-template <typename T, unsigned int ChildCount>
-class Leaf {
+template <typename T, unsigned int ChildCount> class Leaf {
 public:
   using value_type = T;
-  using pointer_type = T*;
-  using const_pointer_type = const T*;
-  using reference_type = T&;
-  using const_reference_type = const T&;
+  using pointer_type = T *;
+  using const_pointer_type = const T *;
+  using reference_type = T &;
+  using const_reference_type = const T &;
 
   Leaf() = default;
   explicit Leaf(value_type value) : value(std::move(value)) {}
@@ -110,33 +104,24 @@ public:
     return *this;
   }
 
-  const_reference_type operator*() {
-    return value;
-  }
+  const_reference_type operator*() { return value; }
 
-  const_pointer_type operator->() {
-    return value;
-  }
+  const_pointer_type operator->() { return value; }
 
   const_reference_type getValue() const { return value; }
   void setValue(value_type value) { Leaf::value = value; }
 
-  [[nodiscard]] virtual NodeType getType() const {
-    return NodeType::Leaf;
-  }
+  [[nodiscard]] virtual NodeType getType() const { return NodeType::Leaf; }
 
-  template <typename F>
-  void traverseDepthFirst(F &&callable) {
+  template <typename F> void traverseDepthFirst(F &&callable) {
     detail::traverseDepthFirstImpl(this, callable);
   }
 
-  template <typename F>
-  void traverseDepthFirstIf(F &&callable) {
+  template <typename F> void traverseDepthFirstIf(F &&callable) {
     detail::traverseDepthFirstIfImpl(this, callable);
   }
 
-  template <typename F>
-  void traverseBreadthFirst(F &&callable) {
+  template <typename F> void traverseBreadthFirst(F &&callable) {
     detail::traverseBreadthFirstImpl(this, callable);
   }
 
@@ -152,6 +137,7 @@ class Node : public Leaf<T, ChildCount> {
   using Child = Leaf<T, ChildCount>;
   using ChildPtr = std::unique_ptr<Leaf<T, ChildCount>>;
   using Children = std::array<ChildPtr, ChildCount>;
+
 public:
   using value_type = typename Base::value_type;
   using pointer_type = typename Base::pointer_type;
@@ -162,12 +148,13 @@ public:
   using Base::operator*;
   using Base::operator->;
   Node() {
-    std::generate(children.begin(), children.end(), [] {return nullptr;});
+    std::generate(children.begin(), children.end(), [] { return nullptr; });
   }
   explicit Node(value_type value) : Leaf<T, ChildCount>(value) {
-    std::generate(children.begin(), children.end(), [] {return nullptr;});
+    std::generate(children.begin(), children.end(), [] { return nullptr; });
   }
-  Node(const Node &other) : Leaf<T, ChildCount>(other), children(other.children) {}
+  Node(const Node &other)
+      : Leaf<T, ChildCount>(other), children(other.children) {}
   Node &operator=(const Node &other) {
     if (&other == this) {
       return *this;
@@ -176,7 +163,8 @@ public:
     children = other.children;
     return *this;
   }
-  Node(Node &&other) noexcept : Leaf<T, ChildCount>(other), children(std::move(other.children)) {}
+  Node(Node &&other) noexcept
+      : Leaf<T, ChildCount>(other), children(std::move(other.children)) {}
   Node &operator=(Node &&other) noexcept {
     *this = Leaf<T, ChildCount>::operator=(other);
     children = std::move(other.children);
@@ -202,9 +190,7 @@ public:
     return *children[index];
   }
 
-  Children &getChildren() {
-    return children;
-  }
+  Children &getChildren() { return children; }
 
   [[nodiscard]] NodeType getType() const override { return NodeType::Node; }
 
@@ -212,10 +198,7 @@ private:
   Children children;
 };
 
-
-
-template <typename T, unsigned int ChildCount>
-class Tree {
+template <typename T, unsigned int ChildCount> class Tree {
 public:
   using Root = Node<T, ChildCount>;
   using value_type = typename Root::value_type;
@@ -225,32 +208,26 @@ public:
   using const_reference_type = typename Root::const_reference_type;
 
   Tree() = default;
-  explicit Tree(value_type rootValue) : root(std::make_unique<Root>(rootValue)) {}
+  explicit Tree(value_type rootValue)
+      : root(std::make_unique<Root>(rootValue)) {}
 
-  Root &getRoot() {
-    return *root;
-  }
+  Root &getRoot() { return *root; }
 
   // root->all of his children recursively
-  template <typename F>
-  void traverseDepthFirst(F &&callable) {
+  template <typename F> void traverseDepthFirst(F &&callable) {
     root->traverseDepthFirst(callable);
   }
 
-  template <typename F>
-  void traverseBreadthFirst(F &&callable) {
+  template <typename F> void traverseBreadthFirst(F &&callable) {
     root->traverseBreadthFirst(callable);
   }
 
-  template <typename F>
-  void traverseDepthFirstIf(F &&callable) {
+  template <typename F> void traverseDepthFirstIf(F &&callable) {
     root->traverseDepthFirstIf(callable);
   }
 
 private:
   std::unique_ptr<Root> root;
 };
-
-
 
 #endif // UTILITIES_TREE_H

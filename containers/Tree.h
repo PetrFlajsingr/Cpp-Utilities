@@ -9,6 +9,7 @@
 
 #include <queue>
 #include <utility>
+#include <memory>
 
 enum class NodeType { Leaf, Node };
 
@@ -161,6 +162,8 @@ public:
 
   Tree() = default;
   explicit Tree(value_type rootValue);
+  Tree(const Tree &other);
+  Tree &operator=(const Tree &other);
   /**
    * Create a tree with given depth. Each node/leaf is initialised with the give value.
    * @param depth depth of tree (root only is 1)
@@ -202,9 +205,9 @@ private:
                            const_reference_type initValue, std::size_t depth);
 };
 
-#include "containers/detail/Tree.tpp"
-#include "containers/detail/Tree_detail.tpp"
-#include "containers/detail/Tree_node.tpp"
+#include "detail/Tree.tpp"
+#include "detail/Tree_detail.tpp"
+#include "detail/Tree_node.tpp"
 #endif // UTILITIES_TREE_H
 
 #pragma clang diagnostic pop

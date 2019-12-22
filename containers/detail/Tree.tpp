@@ -57,3 +57,13 @@ void Tree<T, ChildCount>::initChildren(Node<T, ChildCount> *node,
                  initValue, depth - 1);
   }
 }
+template <typename T, unsigned int ChildCount> Tree<T, ChildCount>::Tree(const Tree &other) {
+  root = std::make_unique<Root>(*other.root);
+}
+template <typename T, unsigned int ChildCount> Tree<T, ChildCount> &Tree<T, ChildCount>::operator=(const Tree &other) {
+  if (&other == this) {
+    return *this;
+  }
+  root = std::make_unique<Root>(*other.root);
+  return *this;
+}

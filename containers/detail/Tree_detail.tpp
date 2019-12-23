@@ -144,3 +144,16 @@ typename TreeIterator<T, ChildCount>::iterator TreeIterator<T, ChildCount>::oper
   ++*this;
   return result;
 }
+template <typename T, unsigned int ChildCount> void TreeIterator<T, ChildCount>::buildQueue(TreeIterator::LeafType *node) {
+  if (node == nullptr) {
+    return;
+  }
+  queue.push(node);
+  if (node->getType() == NodeType::Leaf) {
+    return;
+  }
+  auto notLeafNode = reinterpret_cast<Node<T, ChildCount> *>(node);
+  for (auto &child : notLeafNode->getChildren()) {
+    buildQueue(child.get());
+  }
+}

@@ -251,19 +251,7 @@ private:
   LeafType *root;
   LeafType *current;
 
-  void buildQueue(LeafType *node) {
-    if (node == nullptr) {
-      return;
-    }
-    queue.push(node);
-    if (node->getType() == NodeType::Leaf) {
-      return;
-    }
-    auto notLeafNode = reinterpret_cast<Node<T, ChildCount> *>(node);
-    for (auto &child : notLeafNode->getChildren()) {
-      buildQueue(child.get());
-    }
-  }
+  void buildQueue(LeafType *node);
 };
 
 #include "detail/Tree.tpp"

@@ -7,31 +7,23 @@
 #ifndef UTILITIES_TREE_H
 #define UTILITIES_TREE_H
 
+#include <memory>
 #include <queue>
 #include <utility>
-#include <memory>
 
 enum class NodeType { Leaf, Node };
 
 template <typename T, unsigned int ChildCount> class Leaf;
 template <typename T, unsigned int ChildCount> class Node;
-namespace detail{
-template <unsigned int Count>
-static constexpr bool is_binary_tree = Count == 2;
-template <unsigned int Count>
-using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
-template <typename T, unsigned int ChildCount, typename F>
-void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable);
-template <typename T, unsigned int ChildCount, typename F>
-void traverseDepthFirstIfImpl(Leaf<T, ChildCount> *node, F &callable);
-template <typename T, unsigned int ChildCount, typename F>
-void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable);
-template <typename T, typename F>
-void preorderImpl(Leaf<T, 2> *node, F &&callable);
-template <typename T, typename F>
-void inorderImpl(Leaf<T, 2> *node, F &&callable);
-template <typename T, typename F>
-void postorderImpl(Leaf<T, 2> *node, F &&callable);
+namespace detail {
+template <unsigned int Count> static constexpr bool is_binary_tree = Count == 2;
+template <unsigned int Count> using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
+template <typename T, unsigned int ChildCount, typename F> void traverseDepthFirstImpl(Leaf<T, ChildCount> *node, F &callable);
+template <typename T, unsigned int ChildCount, typename F> void traverseDepthFirstIfImpl(Leaf<T, ChildCount> *node, F &callable);
+template <typename T, unsigned int ChildCount, typename F> void traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable);
+template <typename T, typename F> void preorderImpl(Leaf<T, 2> *node, F &&callable);
+template <typename T, typename F> void inorderImpl(Leaf<T, 2> *node, F &&callable);
+template <typename T, typename F> void postorderImpl(Leaf<T, 2> *node, F &&callable);
 } // namespace detail
 
 template <typename T, unsigned int ChildCount> class Leaf {
@@ -41,6 +33,7 @@ public:
   using const_pointer_type = const T *;
   using reference_type = T &;
   using const_reference_type = const T &;
+  using size_type = std::size_t;
 
   Leaf() = default;
   explicit Leaf(value_type value);
@@ -56,6 +49,10 @@ public:
    * @return value stored in node
    */
   pointer_type operator->() { return &value; }
+  /**
+   * @return value stored in node
+   */
+  reference_type getValue() { return value; }
   /**
    * @return value stored in node
    */
@@ -82,39 +79,35 @@ public:
   /**
    * @see Tree::preorder
    */
-  template <typename F, unsigned int C = ChildCount,
-      typename = detail::enabled_for_binary<C>>
-  void preorder(F &&callable);
+  template <typename F, unsigned int C = ChildCount, typename = detail::enabled_for_binary<C>> void preorder(F &&callable);
   /**
    * @see Tree::inorder
    */
-  template <typename F, unsigned int C = ChildCount,
-      typename = detail::enabled_for_binary<C>>
-  void inorder(F &&callable);
+  template <typename F, unsigned int C = ChildCount, typename = detail::enabled_for_binary<C>> void inorder(F &&callable);
   /**
    * @see Tree::postorder
    */
-  template <typename F, unsigned int C = ChildCount,
-      typename = detail::enabled_for_binary<C>>
-  void postorder(F &&callable);
+  template <typename F, unsigned int C = ChildCount, typename = detail::enabled_for_binary<C>> void postorder(F &&callable);
+
+  Node<T, ChildCount> *getParent();
+
+  Node<T, ChildCount> &asNode();
 
   virtual ~Leaf() = default;
 
 private:
   value_type value;
+  Node<T, ChildCount> *parent;
 };
 
-template <typename T, unsigned int ChildCount>
-class Node : public Leaf<T, ChildCount> {
+template <typename T, unsigned int ChildCount> class Node : public Leaf<T, ChildCount> {
   using Base = Leaf<T, ChildCount>;
   using Child = Leaf<T, ChildCount>;
   using ChildPtr = std::unique_ptr<Leaf<T, ChildCount>>;
   using Children = std::array<ChildPtr, ChildCount>;
 
-  template <unsigned int Count>
-  static constexpr bool is_binary_tree = Count == 2;
-  template <unsigned int Count>
-  using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
+  template <unsigned int Count> static constexpr bool is_binary_tree = Count == 2;
+  template <unsigned int Count> using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
 
 public:
   using value_type = typename Base::value_type;
@@ -143,10 +136,8 @@ public:
 
   [[nodiscard]] NodeType getType() const override { return NodeType::Node; }
 
-  template <unsigned int C = ChildCount, typename = enabled_for_binary<C>>
-  Child &leftChild();
-  template <unsigned int C = ChildCount, typename = enabled_for_binary<C>>
-  Child &rightChild();
+  template <unsigned int C = ChildCount, typename = enabled_for_binary<C>> Child &leftChild();
+  template <unsigned int C = ChildCount, typename = enabled_for_binary<C>> Child &rightChild();
 
 private:
   Children children;
@@ -188,21 +179,14 @@ public:
    */
   template <typename F> void traverseDepthFirstIf(F &&callable);
 
-  template <typename F, unsigned int C = ChildCount,
-            typename = detail::enabled_for_binary<C>>
-  void preorder(F &&callable);
-  template <typename F, unsigned int C = ChildCount,
-            typename = detail::enabled_for_binary<C>>
-  void inorder(F &&callable);
-  template <typename F, unsigned int C = ChildCount,
-            typename = detail::enabled_for_binary<C>>
-  void postorder(F &&callable);
+  template <typename F, unsigned int C = ChildCount, typename = detail::enabled_for_binary<C>> void preorder(F &&callable);
+  template <typename F, unsigned int C = ChildCount, typename = detail::enabled_for_binary<C>> void inorder(F &&callable);
+  template <typename F, unsigned int C = ChildCount, typename = detail::enabled_for_binary<C>> void postorder(F &&callable);
 
 private:
   std::unique_ptr<Root> root;
 
-  static void initChildren(Node<T, ChildCount> *node,
-                           const_reference_type initValue, std::size_t depth);
+  static void initChildren(Node<T, ChildCount> *node, const_reference_type initValue, std::size_t depth);
 };
 
 #include "detail/Tree.tpp"

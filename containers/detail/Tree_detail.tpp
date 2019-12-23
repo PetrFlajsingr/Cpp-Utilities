@@ -54,8 +54,7 @@ void detail::traverseBreadthFirstImpl(Leaf<T, ChildCount> *node, F &callable) {
     }
   }
 }
-template <typename T, typename F>
-void detail::preorderImpl(Leaf<T, 2> *node, F &&callable) {
+template <typename T, typename F> void detail::preorderImpl(Leaf<T, 2> *node, F &&callable) {
   if (node == nullptr) {
     return;
   }
@@ -67,8 +66,7 @@ void detail::preorderImpl(Leaf<T, 2> *node, F &&callable) {
   preorderImpl(&notLeafNode->leftChild(), callable);
   preorderImpl(&notLeafNode->rightChild(), callable);
 }
-template <typename T, typename F>
-void detail::inorderImpl(Leaf<T, 2> *node, F &&callable) {
+template <typename T, typename F> void detail::inorderImpl(Leaf<T, 2> *node, F &&callable) {
   if (node == nullptr) {
     return;
   }
@@ -81,8 +79,7 @@ void detail::inorderImpl(Leaf<T, 2> *node, F &&callable) {
     preorderImpl(&notLeafNode->rightChild(), callable);
   }
 }
-template <typename T, typename F>
-void detail::postorderImpl(Leaf<T, 2> *node, F &&callable) {
+template <typename T, typename F> void detail::postorderImpl(Leaf<T, 2> *node, F &&callable) {
   if (node == nullptr) {
     return;
   }

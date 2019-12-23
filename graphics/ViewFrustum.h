@@ -7,20 +7,20 @@
 
 #include "BoundingBox.h"
 #include "BoundingSphere.h"
+#include "common.h"
 #include <array>
-#include <glm/vec4.hpp>
+#include <glm/glm.hpp>
 
 namespace geo {
-enum class FrustumPosition { Inside, Outside, Intersection };
 
 class ViewFrustum {
   std::array<glm::vec4, 6> planes;
 
+public:
   static ViewFrustum FromProjectionView(const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix);
 
-  [[nodiscard]] FrustumPosition contains(const BoundingBox<3> &aabb) const;
-
-  [[nodiscard]] FrustumPosition contains(const BoundingSphere<3> &bs) const;
+  [[nodiscard]] RelativePosition contains(const BoundingBox<3> &aabb) const;
+  [[nodiscard]] RelativePosition contains(const BoundingSphere<3> &bs) const;
 };
 } // namespace geo
 

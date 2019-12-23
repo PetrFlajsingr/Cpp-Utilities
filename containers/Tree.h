@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <queue>
+#include <stack>
 #include <utility>
 
 /**
@@ -18,14 +19,13 @@
  *  -   Leaf - last node in the tree, can't have any children
  *  -   Node - non-terminating node, has ChildCount children
  *  Default value for each child is nullptr.
- *
- *  TODO: iterator
  */
 
 enum class NodeType { Leaf, Node };
 
 template <typename T, unsigned int ChildCount> class Leaf;
 template <typename T, unsigned int ChildCount> class Node;
+template <typename T, unsigned int ChildCount> class TreeIterator;
 namespace detail {
 template <unsigned int Count> static constexpr bool is_binary_tree = Count == 2;
 template <unsigned int Count> using enabled_for_binary = std::enable_if_t<is_binary_tree<Count>>;
@@ -45,6 +45,7 @@ public:
   using reference_type = T &;
   using const_reference_type = const T &;
   using size_type = std::size_t;
+  using iterator = TreeIterator<T, ChildCount>;
 
   Leaf() = default;
   explicit Leaf(value_type value);
@@ -106,6 +107,14 @@ public:
 
   virtual ~Leaf() = default;
 
+  iterator begin() {
+    return iterator{this};
+  }
+
+  iterator end() {
+    return iterator{nullptr};
+  }
+
 private:
   value_type value;
   Node<T, ChildCount> *parent;
@@ -126,6 +135,8 @@ public:
   using const_pointer_type = typename Base::const_pointer_type;
   using reference_type = typename Base::reference_type;
   using const_reference_type = typename Base::const_reference_type;
+  using size_type = typename Base::size_type;
+  using iterator = typename Base::iterator;
 
   using Base::operator*;
   using Base::operator->;
@@ -144,6 +155,8 @@ public:
   void setChildrenValues(const_reference_type value, NodeType nodeType);
   Child &childAtIndex(std::size_t index);
   Children &getChildren() { return children; }
+  Child &getChild(size_type index) { return *children[index]; }
+  Child &operator[](size_type index) { return getChild(index); }
 
   [[nodiscard]] NodeType getType() const override { return NodeType::Node; }
 
@@ -161,6 +174,7 @@ public:
   using const_pointer_type = typename Root::const_pointer_type;
   using reference_type = typename Root::reference_type;
   using const_reference_type = typename Root::const_reference_type;
+  using iterator = typename Root::iterator;
 
   Tree() = default;
   explicit Tree(value_type rootValue);
@@ -174,6 +188,14 @@ public:
   static Tree BuildTree(std::size_t depth, const_reference_type initValue);
 
   Root &getRoot() { return *root; }
+
+  iterator begin() {
+    return root->begin();
+  }
+
+  iterator end() {
+    return root->end();
+  }
 
   /**
    * Call F for a value of each node in depth first order.
@@ -198,6 +220,50 @@ private:
   std::unique_ptr<Root> root;
 
   static void initChildren(Node<T, ChildCount> *node, const_reference_type initValue, std::size_t depth);
+};
+
+template <typename T, unsigned int ChildCount> class TreeIterator {
+  using LeafType = Leaf<T, ChildCount>;
+public:
+  using iterator = TreeIterator;
+  using value_type = T;
+  using reference = T &;
+  using pointer = T *;
+  using difference_type = std::size_t;
+  using iterator_category = std::input_iterator_tag;
+
+  TreeIterator();
+  explicit TreeIterator(LeafType *root);
+  TreeIterator(const iterator &other);
+  iterator &operator=(const iterator &other);
+
+  bool operator==(const iterator &other) const;
+  bool operator!=(const iterator &other) const;
+
+  reference operator*();
+  pointer operator->();
+
+  iterator &operator++();
+  iterator operator++(int);
+
+private:
+  std::queue<LeafType*> queue;
+  LeafType *root;
+  LeafType *current;
+
+  void buildQueue(LeafType *node) {
+    if (node == nullptr) {
+      return;
+    }
+    queue.push(node);
+    if (node->getType() == NodeType::Leaf) {
+      return;
+    }
+    auto notLeafNode = reinterpret_cast<Node<T, ChildCount> *>(node);
+    for (auto &child : notLeafNode->getChildren()) {
+      buildQueue(child.get());
+    }
+  }
 };
 
 #include "detail/Tree.tpp"

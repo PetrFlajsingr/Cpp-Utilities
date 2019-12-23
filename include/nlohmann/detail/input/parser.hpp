@@ -156,7 +156,7 @@ private:
   template <typename SAX>
   JSON_HEDLEY_NON_NULL(2)
   bool sax_parse_internal(SAX *sax) {
-    // stack to remember the hierarchy of structured values we are parsing
+    // queue to remember the hierarchy of structured values we are parsing
     // true = array; false = object
     std::vector<bool> states;
     // value to avoid a goto (see comment where set to true)
@@ -316,7 +316,7 @@ private:
 
       // we reached this line after we successfully parsed a value
       if (states.empty()) {
-        // empty stack: we reached the end of the hierarchy: done
+        // empty queue: we reached the end of the hierarchy: done
         return true;
       }
 

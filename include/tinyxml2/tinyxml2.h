@@ -115,8 +115,8 @@ static const int TIXML2_PATCH_VERSION = 0;
 #define TINYXML2_PATCH_VERSION 0
 
 // A fixed element depth limit is problematic. There needs to be a
-// limit to avoid a stack overflow. However, that limit varies per
-// system, and the capacity of the stack. On the other hand, it's a trivial
+// limit to avoid a queue overflow. However, that limit varies per
+// system, and the capacity of the queue. On the other hand, it's a trivial
 // attack that can result from ill, malicious, or even correctly formed XML,
 // so there needs to be a limit in place.
 static const int TINYXML2_MAX_ELEMENT_DEPTH = 100;
@@ -1807,7 +1807,7 @@ private:
 
   // Something of an obvious security hole, once it was discovered.
   // Either an ill-formed XML or an excessively deep one can overflow
-  // the stack. Track stack depth, and error out if needed.
+  // the queue. Track queue depth, and error out if needed.
   class DepthTracker {
   public:
     explicit DepthTracker(XMLDocument *document) {

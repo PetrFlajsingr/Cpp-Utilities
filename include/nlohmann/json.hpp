@@ -980,10 +980,10 @@ private:
     json_value(array_t &&value) { array = create<array_t>(std::move(value)); }
 
     void destroy(value_t t) noexcept {
-      // flatten the current json_value to a heap-allocated stack
+      // flatten the current json_value to a heap-allocated queue
       std::vector<basic_json> stack;
 
-      // move the top-level items to stack
+      // move the top-level items to queue
       if (t == value_t::array) {
         stack.reserve(array->size());
         std::move(array->begin(), array->end(), std::back_inserter(stack));
@@ -1000,7 +1000,7 @@ private:
         stack.pop_back();
 
         // if current_item is array/object, move
-        // its children to the stack to be processed later
+        // its children to the queue to be processed later
         if (current_item.is_array()) {
           std::move(current_item.m_value.array->begin(),
                     current_item.m_value.array->end(),

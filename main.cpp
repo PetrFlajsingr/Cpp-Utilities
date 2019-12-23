@@ -130,9 +130,13 @@ int main() {
   }
 
 
-  tree.inorder([](auto value) {
+  tree.traverseDepthFirst([](auto value) {
     print(value);
   });
+  print("___");
+  for (auto &val : tree.getRoot().leftChild().asNode().leftChild().asNode().leftChild()) {
+    print(val);
+  }
 
 
   tree.getRoot().leftChild().inorder([](auto value) {

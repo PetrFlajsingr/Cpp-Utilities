@@ -1236,7 +1236,7 @@ private:
     // values are stored in values_, otherwise they are stored in args_.
     // This is done to reduce compiled code size as storing larger objects
     // may require more code (at least on x86-64) even if the same amount of
-    // data is actually copied to stack. It saves ~10% on the bloat test.
+    // data is actually copied to queue. It saves ~10% on the bloat test.
     const internal::value<Context> *values_;
     const format_arg *args_;
   };

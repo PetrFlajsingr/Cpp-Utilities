@@ -27,10 +27,8 @@ template <unsigned int Dimensions = 3> struct BoundingBox {
   [[nodiscard]] bool contains(Point point) const;
 };
 
-
 template <unsigned int Dims> std::ostream &operator<<(std::ostream &stream, const BoundingBox<Dims> &aabb);
 } // namespace geo
-
 
 #include "BoundingBox.tpp"
 #endif // UTILITIES_BOUNDINGBOX_H

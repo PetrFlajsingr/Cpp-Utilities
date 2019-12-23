@@ -18,10 +18,8 @@ template <unsigned int Dimensions> bool geo::BoundingBox<Dimensions>::operator!=
 template <unsigned int Dimensions>
 geo::RelativePosition geo::BoundingBox<Dimensions>::contains(const geo::BoundingBox<Dimensions> &aabb) const {
   if constexpr (Dimensions == 2) {
-    const bool minIn =
-        p1.x < aabb.p1.x && p1.y < aabb.p1.y && p2.x > aabb.p1.x && p2.y > aabb.p1.y;
-    const bool maxIn =
-        p2.x > aabb.p2.x && p2.y > aabb.p2.y && p1.x < aabb.p2.x && p1.y < aabb.p2.y;
+    const bool minIn = p1.x < aabb.p1.x && p1.y < aabb.p1.y && p2.x > aabb.p1.x && p2.y > aabb.p1.y;
+    const bool maxIn = p2.x > aabb.p2.x && p2.y > aabb.p2.y && p1.x < aabb.p2.x && p1.y < aabb.p2.y;
     if (minIn && maxIn) {
       return RelativePosition::Inside;
     }

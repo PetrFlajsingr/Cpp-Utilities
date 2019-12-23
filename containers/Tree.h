@@ -11,6 +11,17 @@
 #include <queue>
 #include <utility>
 
+/**
+ * Simple tree implementation. It does not provide insert/find methods.
+ * The tree has a set structure of an exact amount of children for each node.
+ * There are two types of node:
+ *  -   Leaf - last node in the tree, can't have any children
+ *  -   Node - non-terminating node, has ChildCount children
+ *  Default value for each child is nullptr.
+ *
+ *  TODO: iterator
+ */
+
 enum class NodeType { Leaf, Node };
 
 template <typename T, unsigned int ChildCount> class Leaf;

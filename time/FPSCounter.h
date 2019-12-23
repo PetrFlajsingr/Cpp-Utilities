@@ -5,31 +5,29 @@
 #ifndef UTILITIES_FPSCOUNTER_H
 #define UTILITIES_FPSCOUNTER_H
 
+#include "now.h"
 #include <chrono>
 #include <ostream>
-#include "now.h"
 
 using namespace std::chrono_literals;
 
 class FPSCounter {
 public:
-    [[nodiscard]] float average() const;
+  [[nodiscard]] float average() const;
 
-    [[nodiscard]] float current() const;
+  [[nodiscard]] float current() const;
 
-    void frame();
+  void frame();
 
-    void restart();
+  void restart();
 
-    friend std::ostream &operator<<(std::ostream &stream, const FPSCounter &fpsCounter);
+  friend std::ostream &operator<<(std::ostream &stream, const FPSCounter &fpsCounter);
 
 private:
-    uint64_t totalFrameCount = 0;
-    std::chrono::milliseconds totalTimeSum = 0ms;
-    std::chrono::milliseconds lastTimeStamp = now<std::chrono::milliseconds>();
-    std::chrono::milliseconds lastFrameDuration = 0ms;
-
+  uint64_t totalFrameCount = 0;
+  std::chrono::milliseconds totalTimeSum = 0ms;
+  std::chrono::milliseconds lastTimeStamp = now<std::chrono::milliseconds>();
+  std::chrono::milliseconds lastFrameDuration = 0ms;
 };
 
-
-#endif //UTILITIES_FPSCOUNTER_H
+#endif // UTILITIES_FPSCOUNTER_H

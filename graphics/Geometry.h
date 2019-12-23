@@ -5,13 +5,13 @@
 #ifndef UTILITIES_GEOMETRY_H
 #define UTILITIES_GEOMETRY_H
 
-#include <glm/vec4.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 namespace geo {
-    float distanceToPlane(const glm::vec4 &plane, const glm::vec4 &point);
+float distanceToPlane(const glm::vec4 &plane, const glm::vec4 &point);
 
-    glm::vec3 midPoint(const glm::vec3 &p1, const glm::vec3 &p2);
-}
+glm::vec3 midPoint(const glm::vec3 &p1, const glm::vec3 &p2);
+} // namespace geo
 
-#endif //UTILITIES_GEOMETRY_H
+#endif // UTILITIES_GEOMETRY_H

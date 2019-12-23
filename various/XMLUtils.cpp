@@ -5,11 +5,9 @@
 #include "XMLUtils.h"
 
 Xml::Tag::Tag(std::string name) : Base(), name(name) {}
-Xml::Attribute::Attribute(std::string name, std::string value)
-    : Base(), name(name), value(value) {}
+Xml::Attribute::Attribute(std::string name, std::string value) : Base(), name(name), value(value) {}
 Xml::Index::Index(int index) : index(index) {}
-NamedSiblingIterator::NamedSiblingIterator(tinyxml2::XMLElement *element)
-    : current(element), valid(element != nullptr) {}
+NamedSiblingIterator::NamedSiblingIterator(tinyxml2::XMLElement *element) : current(element), valid(element != nullptr) {}
 NamedSiblingIterator &NamedSiblingIterator::operator++() {
   current = current->NextSiblingElement(current->Name());
   if (current == nullptr) {
@@ -29,9 +27,7 @@ tinyxml2::XMLElement *NamedSiblingIterator::operator*() { return current; }
 bool NamedSiblingIterator::operator==(const NamedSiblingIterator &rhs) const {
   return current == rhs.current && !valid && !rhs.valid;
 }
-bool NamedSiblingIterator::operator!=(const NamedSiblingIterator &rhs) const {
-  return !(rhs == *this);
-}
+bool NamedSiblingIterator::operator!=(const NamedSiblingIterator &rhs) const { return !(rhs == *this); }
 NamedSiblingIterator::operator bool() { return valid; }
 NamedSiblingIterator NamedSiblingIterator::Invalid() {
   NamedSiblingIterator result{nullptr};
@@ -40,11 +36,7 @@ NamedSiblingIterator NamedSiblingIterator::Invalid() {
 }
 NamedSiblingIterator NamedSiblingIteratorInterface::begin() { return current; }
 NamedSiblingIterator NamedSiblingIteratorInterface::end() { return nullptr; }
-NamedSiblingIteratorInterface::NamedSiblingIteratorInterface(
-    tinyxml2::XMLElement *element)
-    : current(element) {}
-NamedSiblingIteratorInterface childrenByName(tinyxml2::XMLElement *element,
-                                             const std::string &name) {
-  return NamedSiblingIteratorInterface{
-      element->FirstChildElement(name.c_str())};
+NamedSiblingIteratorInterface::NamedSiblingIteratorInterface(tinyxml2::XMLElement *element) : current(element) {}
+NamedSiblingIteratorInterface childrenByName(tinyxml2::XMLElement *element, const std::string &name) {
+  return NamedSiblingIteratorInterface{element->FirstChildElement(name.c_str())};
 }

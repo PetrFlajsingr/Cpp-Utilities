@@ -3,25 +3,20 @@
 //
 
 template <typename T>
-std::optional<T> findByName(tinyxml2::XMLElement *el, const KeysContainer &keys,
-                            unsigned int currentIndex) {
-  if (auto der = dynamic_cast<const Xml::Tag *>(&(keys[currentIndex].get()));
-      der != nullptr) {
+std::optional<T> findByName(tinyxml2::XMLElement *el, const KeysContainer &keys, unsigned int currentIndex) {
+  if (auto der = dynamic_cast<const Xml::Tag *>(&(keys[currentIndex].get())); der != nullptr) {
     for (const auto &element : childrenByName(el, der->name)) {
       if (currentIndex == keys.size() - 1) {
         T result;
         from_xml(result, element);
         return result;
-      } else if (auto res = findByName<T>(element, keys, currentIndex + 1);
-                 res.has_value()) {
+      } else if (auto res = findByName<T>(element, keys, currentIndex + 1); res.has_value()) {
         return res;
       }
     }
     return std::nullopt;
   } else {
-    if (auto der =
-            dynamic_cast<const Xml::Attribute *>(&(keys[currentIndex].get()));
-        der != nullptr) {
+    if (auto der = dynamic_cast<const Xml::Attribute *>(&(keys[currentIndex].get())); der != nullptr) {
       auto attr = el->Attribute(der->name.c_str(), der->value.c_str());
       if (attr != nullptr) {
         T result;
@@ -33,12 +28,9 @@ std::optional<T> findByName(tinyxml2::XMLElement *el, const KeysContainer &keys,
   }
   return std::nullopt;
 }
-template <typename T>
-bool setByName(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *el,
-               const T &value, const KeysContainer &keys,
-               unsigned int currentIndex) {
-  if (auto der = dynamic_cast<const Xml::Tag *>(&(keys[currentIndex].get()));
-      der != nullptr) {
+template <typename T> bool setByName(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *el, const T &value,
+                                     const KeysContainer &keys, unsigned int currentIndex) {
+  if (auto der = dynamic_cast<const Xml::Tag *>(&(keys[currentIndex].get())); der != nullptr) {
     bool exists = false;
     for (const auto &element : childrenByName(el, der->name)) {
       exists = true;
@@ -54,20 +46,16 @@ bool setByName(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *el,
       }
     }
     if (!exists) {
-      auto element = dynamic_cast<tinyxml2::XMLElement *>(
-          el->LinkEndChild(doc->NewElement(der->name.c_str())));
+      auto element = dynamic_cast<tinyxml2::XMLElement *>(el->LinkEndChild(doc->NewElement(der->name.c_str())));
       if (currentIndex == keys.size() - 1) {
-        auto toSetElement = dynamic_cast<tinyxml2::XMLElement *>(
-            element->LinkEndChild(doc->NewElement("")));
+        auto toSetElement = dynamic_cast<tinyxml2::XMLElement *>(element->LinkEndChild(doc->NewElement("")));
         to_xml(value, toSetElement);
         return true;
       }
       setByName<T>(doc, element, value, keys, currentIndex + 1);
     }
   } else {
-    if (auto der =
-            dynamic_cast<const Xml::Attribute *>(&(keys[currentIndex].get()));
-        der != nullptr) {
+    if (auto der = dynamic_cast<const Xml::Attribute *>(&(keys[currentIndex].get())); der != nullptr) {
       auto attr = el->Attribute(der->name.c_str());
       if (attr == nullptr || attr == der->value) {
         to_xml(value, el);
@@ -79,29 +67,22 @@ bool setByName(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *el,
 }
 
 template <typename T, typename... Keys>
-std::optional<T>
-ConfigContainerTraits<XmlContainer>::find(XmlContainer &container,
-                                          const Keys &... keys) {
+std::optional<T> ConfigContainerTraits<XmlContainer>::find(XmlContainer &container, const Keys &... keys) {
   KeysContainer tmpKeys{keys...};
   auto element = container->RootElement();
   return findByName<T>(element, tmpKeys);
 }
-template <typename... Keys>
-bool ConfigContainerTraits<XmlContainer>::contains(XmlContainer &container,
-                                                   const Keys &... keys) {
+template <typename... Keys> bool ConfigContainerTraits<XmlContainer>::contains(XmlContainer &container, const Keys &... keys) {
   KeysContainer tmpKeys{keys...};
   auto element = container->RootElement();
   return Xml::findElement(element, tmpKeys) != nullptr;
 }
 template <typename T, typename... Keys>
-void ConfigContainerTraits<XmlContainer>::set(XmlContainer &container,
-                                              const T &value,
-                                              const Keys &... keys) {
+void ConfigContainerTraits<XmlContainer>::set(XmlContainer &container, const T &value, const Keys &... keys) {
   KeysContainer tmpKeys{keys...};
   auto element = container->RootElement();
   if (tmpKeys.empty()) {
-    auto newElement = dynamic_cast<tinyxml2::XMLElement *>(
-        element->LinkEndChild(container->NewElement("")));
+    auto newElement = dynamic_cast<tinyxml2::XMLElement *>(element->LinkEndChild(container->NewElement("")));
     to_xml(value, newElement);
     return;
   }
@@ -114,7 +95,4 @@ XmlContainer ConfigLoader<XmlContainer>::load(std::string_view path) {
   return result;
 }
 
-void ConfigSaver<XmlContainer>::save(XmlContainer &config,
-                                     std::string_view path) {
-  config->SaveFile(std::string(path).c_str());
-}
+void ConfigSaver<XmlContainer>::save(XmlContainer &config, std::string_view path) { config->SaveFile(std::string(path).c_str()); }

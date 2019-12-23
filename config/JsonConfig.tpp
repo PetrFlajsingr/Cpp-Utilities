@@ -1,8 +1,7 @@
 
 
 template <typename... Keys>
-std::optional<nlohmann::json::iterator> findJsonNode(nlohmann::json &container,
-                                                     const Keys &... keys) {
+std::optional<nlohmann::json::iterator> findJsonNode(nlohmann::json &container, const Keys &... keys) {
   std::vector<std::string> tmpKeys{keys...};
   nlohmann::json::iterator iter;
   for (unsigned int i : until(0, tmpKeys.size())) {
@@ -20,9 +19,7 @@ std::optional<nlohmann::json::iterator> findJsonNode(nlohmann::json &container,
   return iter;
 }
 
-template <typename T, typename... Keys>
-void setJsonNode(nlohmann::json &container, const T &value,
-                 const Keys &... keys) {
+template <typename T, typename... Keys> void setJsonNode(nlohmann::json &container, const T &value, const Keys &... keys) {
   std::vector<std::string> tmpKeys{keys...};
   auto tmp = container;
   for (unsigned int i : until(0, tmpKeys.size() - 1)) {
@@ -35,23 +32,18 @@ void setJsonNode(nlohmann::json &container, const T &value,
 }
 
 template <typename... Keys>
-bool ConfigContainerTraits<nlohmann::json>::contains(nlohmann::json &container,
-                                                     const Keys &... keys) {
+bool ConfigContainerTraits<nlohmann::json>::contains(nlohmann::json &container, const Keys &... keys) {
   return findJsonNode(container, keys...).has_value();
 }
 template <typename T, typename... Keys>
-std::optional<T>
-ConfigContainerTraits<nlohmann::json>::find(nlohmann::json &container,
-                                            const Keys &... keys) {
+std::optional<T> ConfigContainerTraits<nlohmann::json>::find(nlohmann::json &container, const Keys &... keys) {
   if (auto iter = findJsonNode(container, keys...); iter.has_value()) {
     return **iter;
   }
   return std::nullopt;
 }
 template <typename T, typename... Keys>
-void ConfigContainerTraits<nlohmann::json>::set(nlohmann::json &container,
-                                                const T &value,
-                                                const Keys &... keys) {
+void ConfigContainerTraits<nlohmann::json>::set(nlohmann::json &container, const T &value, const Keys &... keys) {
   setJsonNode(container, value, keys...);
 }
 
@@ -62,8 +54,7 @@ nlohmann::json ConfigLoader<nlohmann::json>::load(std::string_view path) {
   return result;
 }
 
-void ConfigSaver<nlohmann::json>::save(nlohmann::json &config,
-                                       std::string_view path) {
+void ConfigSaver<nlohmann::json>::save(nlohmann::json &config, std::string_view path) {
   std::ofstream stream{std::string(path)};
   stream << config;
 }

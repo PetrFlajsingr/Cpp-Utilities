@@ -2,8 +2,8 @@
 // Created by petr on 10/31/19.
 //
 
-#ifndef EXCEPTIONS_H
-#define EXCEPTIONS_H
+#ifndef UTILITIES_EXCEPTIONS_H
+#define UTILITIES_EXCEPTIONS_H
 
 #include <exception>
 #include <experimental/source_location>
@@ -46,4 +46,4 @@ class InternalError : public Error {
 
 } // namespace exc
 
-#endif // EXCEPTIONS_H
+#endif // UTILITIES_EXCEPTIONS_H

@@ -2,8 +2,8 @@
 // Created by Petr Flajsingr on 2019-01-25.
 //
 
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef UTILITIES_LOGGER_H
+#define UTILITIES_LOGGER_H
 
 #include "meta/glm.h"
 #include "meta/meta.h"
@@ -104,4 +104,4 @@ public:
 
 #include "logger.tpp"
 
-#endif // LOGGER_H
+#endif // UTILITIES_LOGGER_H

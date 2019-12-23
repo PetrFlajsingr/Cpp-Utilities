@@ -2,8 +2,8 @@
 // Created by petr on 10/28/19.
 //
 
-#ifndef TERRAINGENERATION_META_H
-#define TERRAINGENERATION_META_H
+#ifndef UTILITIES_META_H
+#define UTILITIES_META_H
 
 #include "chrono.h"
 #include "iterable.h"
@@ -78,4 +78,4 @@ template <typename... T> using largest_signed_integer_t = std::conditional_t<
                         std::conditional_t<is_one_of_v<wchar_t, T...>, wchar_t,
                                            std::conditional_t<is_one_of_v<signed char, T...>, signed char,
                                                               std::conditional_t<is_one_of_v<char, T...>, char, void>>>>>>>>>;
-#endif // TERRAINGENERATION_META_H
+#endif // UTILITIES_META_H

@@ -2,8 +2,8 @@
 // Created by petr on 10/26/19.
 //
 
-#ifndef LAZY_H
-#define LAZY_H
+#ifndef UTILITIES_LAZY_H
+#define UTILITIES_LAZY_H
 
 #include <functional>
 #include <optional>
@@ -25,4 +25,4 @@ template <typename T> std::ostream &operator<<(std::ostream &stream, Lazy<T> &ot
 
 #include "Lazy.tpp"
 
-#endif // LAZY_H
+#endif // UTILITIES_LAZY_H

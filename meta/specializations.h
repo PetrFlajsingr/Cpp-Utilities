@@ -5,6 +5,8 @@
 #ifndef UTILITIES_SPECIALIZATIONS_H
 #define UTILITIES_SPECIALIZATIONS_H
 
+#include <type_traits>
+
 template <class T, template <class...> class Template> struct is_specialization : std::false_type {};
 
 template <template <class...> class Template, class... Args> struct is_specialization<Template<Args...>, Template>

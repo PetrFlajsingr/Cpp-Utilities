@@ -5,9 +5,9 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "../meta/glm.h"
-#include "../meta/meta.h"
-#include "../time/now.h"
+#include "meta/glm.h"
+#include "meta/meta.h"
+#include "time/now.h"
 #include "types/Range.h"
 #include <any>
 #include <chrono>

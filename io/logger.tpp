@@ -67,7 +67,7 @@ void Logger<OutStream>::print(const T &value, unsigned int indentLevel) const {
     }
     print(indent(indentLevel));
     print("},\n");
-  } else if constexpr (is_vec_specialisation_v<T>) {
+  } else if constexpr (is_vec_specialisation_v<std::decay_t<T>>) {
     print(indent(indentLevel));
     print("glm::vec" + std::to_string(value.length()) + ":");
     print(" {");
@@ -78,11 +78,22 @@ void Logger<OutStream>::print(const T &value, unsigned int indentLevel) const {
       }
     }
     print("}");
+  } else if constexpr (std::is_same_v<T, glm::mat4>) {
+    print("glm::mat4:");
+    print("{\n");
+    for (auto y = 0; y < 4; ++y) {
+      print("{");
+      for (auto x = 0; x < 4; ++x) {
+        print(value[x][y]);
+        if (x < 3) {
+          print(", ");
+        }
+      }
+      print("}\n");
+    }
+    print("}");
   } else {
-    if constexpr (std::is_pointer_v<T>) {
-      print("Pointer address: ");
-      outputStream << std::hex << value;
-    } else if constexpr (std::is_same_v<std::decay_t<T>, bool>) {
+    if constexpr (std::is_same_v<std::decay_t<T>, bool>) {
       outputStream << (value ? "true" : "false");
     } else if constexpr (is_specialization_v<T, std::optional>) {
       if (value.has_value()) {

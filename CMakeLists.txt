@@ -17,4 +17,6 @@ add_executable(main main.cpp
         graphics/Geometry.cpp
         graphics/ViewFrustum.cpp
         time/FPSCounter.cpp
-        include/tinyxml2/tinyxml2.cpp various/XMLSerialisation.h config/XmlConfig.tpp reactive/Binding.h reactive/OneWayBinding.h reactive/TwoWayBinding.h containers/Tree.h)
+        include/tinyxml2/tinyxml2.cpp various/XMLSerialisation.h config/XmlConfig.tpp reactive/Binding.h reactive/OneWayBinding.h reactive/TwoWayBinding.h containers/Tree.h parallel/ThreadPool.h parallel/SafeQueue.h)
+
+target_link_libraries(main -pthread)

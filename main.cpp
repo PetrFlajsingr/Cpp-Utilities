@@ -9,6 +9,7 @@
 #include <utility>
 #include "types/Zip.h"
 #include "containers/Tree.h"
+#include "parallel/ThreadPool.h"
 
 using String = StringDecorator<std::string>;
 
@@ -109,39 +110,23 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 
 
-
+#include <unistd.h>
 int main() {
-  constexpr auto childCount = 2;
-  Tree<char, childCount> tree{0};
-  for (auto i : range(childCount)) {
-    tree.getRoot().setChildAtIndex(i, NodeType::Node).setValue(i + 1 + 'a');
-  }
-  for (auto &child : tree.getRoot().getChildren()) {
-    auto &node = dynamic_cast<Node<char, childCount> &>(*child);
-    for (auto i : range(childCount)) {
-      node.setChildAtIndex(i, NodeType::Node).setValue((i + 1) * 10 + 'a');
-    }
-    for (auto &c2 : node.getChildren()) {
-      auto &node = dynamic_cast<Node<char, childCount> &>(*c2);
-      for (auto i : range(childCount)) {
-        node.setChildAtIndex(i, NodeType::Leaf).setValue((i + 1) * 100 + 'a');
-      }
-    }
-  }
+  std::packaged_task<int()> task {[] {return 10;}};
+  std::packaged_task<int()> task2 {[] {
+    usleep(1000000);
+    return 1000;}};
 
+  ThreadPool pool(2);
 
-  tree.traverseDepthFirst([](auto value) {
-    print(value);
-  });
-  print("___");
-  for (auto &val : tree.getRoot().leftChild().asNode().leftChild().asNode().leftChild()) {
-    print(val);
-  }
+  auto fut = pool.push(std::move(task2));
+  auto fut2 = pool.push(std::move(task));
 
+  fut2.wait();
+  std::cout << fut2.get() << std::endl;
+  fut.wait();
+  std::cout << fut.get() << std::endl;
 
-  tree.getRoot().leftChild().inorder([](auto value) {
-    print(value);
-  });
 
     /*
     observable::value<int> a{11};

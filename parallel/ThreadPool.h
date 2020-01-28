@@ -35,9 +35,11 @@ public:
   ThreadPool(ThreadPool &&) = default;
   ThreadPool &operator=(ThreadPool &&) = default;
 
-  template <typename T> std::future<T> push(std::packaged_task<T()> &&task) {
+  template <typename F> std::future<decltype(std::declval<F>()())> push(F &&callable) {
+    using result_type = decltype(callable());
+    auto task = std::packaged_task<result_type()>(std::forward<F>(callable));
     auto future = task.get_future();
-    queue.enqueue(std::make_unique<PTask<T>>(std::move(task)));
+    queue.enqueue(std::make_unique<PTask<result_type>>(std::move(task)));
     return future;
   }
 
@@ -58,8 +60,9 @@ private:
       if (task.has_value()) {
         auto callable = std::move(task.value());
         (*callable)();
+      } else {
+        return;
       }
-      return;
     }
   }
 };

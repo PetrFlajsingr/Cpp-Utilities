@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 project(Utilities)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
 include_directories($(CMAKE_SOURCE_DIR))
@@ -17,6 +17,7 @@ add_executable(main main.cpp
         graphics/Geometry.cpp
         graphics/ViewFrustum.cpp
         time/FPSCounter.cpp
+        error_handling/exceptions.cpp
         include/tinyxml2/tinyxml2.cpp various/XMLSerialisation.h config/XmlConfig.tpp reactive/Binding.h reactive/OneWayBinding.h reactive/TwoWayBinding.h containers/Tree.h parallel/ThreadPool.h parallel/SafeQueue.h)
 
 target_link_libraries(main -pthread)

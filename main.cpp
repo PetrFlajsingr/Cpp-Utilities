@@ -4,6 +4,7 @@
 
 #include "config/JsonConfig.h"
 #include "config/XmlConfig.h"
+#include "containers/BinarySearchTree.h"
 #include "containers/Tree.h"
 #include "observable/observable.hpp"
 #include "parallel/ThreadPool.h"
@@ -106,25 +107,24 @@ double demo() { return 11515.001f; }
 double calc(int x) { return x / 10.0; }
 
 int main() {
-  ThreadPool pool(2);
+  BinarySearchTree<int, int> tree;
+  tree.insert(10, 1);
+  tree.insert(20, 2);
+  tree.insert(5, 1);
+  tree.insert(3, 1);
+  tree.insert(15, 1);
 
-  auto fut = pool.push([] { return 10; });
-  auto fut2 = pool.push([] { return demo(); });
-
-  std::cout << fut2.get() << std::endl;
-  std::cout << fut.get() << std::endl;
-
-  std::vector<std::future<double>> futures;
-  futures.reserve(100);
-  for (auto i : range(100)) {
-    futures.emplace_back(pool.push([i] { return calc(i); }));
+  for (auto [key, value] : tree) {
+    std::cout << "Key: " << key << " value: " << value << std::endl;
+    value = 10;
   }
 
-  auto sum = 0.0;
-  for (auto &future : futures) {
-    sum += future.get();
+  tree.insert(5555, 74668);
+  tree.insert(14, 10);
+
+  for (auto [key, value] : tree) {
+    std::cout << "Key: " << key << " value: " << value << std::endl;
   }
-  print("Computed value: ", sum);
 
   /*
   observable::value<int> a{11};

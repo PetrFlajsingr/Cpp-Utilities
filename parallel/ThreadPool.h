@@ -17,7 +17,7 @@ struct Task {
 };
 
 template <typename T> struct PTask : public Task {
-  PTask(std::packaged_task<T()> &&task) : task(std::move(task)) {}
+  explicit PTask(std::packaged_task<T()> &&task) : task(std::move(task)) {}
   void execute() override { task(); }
   std::packaged_task<T()> task;
 };

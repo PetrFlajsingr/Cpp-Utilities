@@ -10,7 +10,7 @@
 #include "types/Zip.h"
 #include "containers/Tree.h"
 #include "parallel/ThreadPool.h"
-
+#include "various/overload.h"
 using String = StringDecorator<std::string>;
 
 class Button {
@@ -111,21 +111,28 @@ void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 
 #include <unistd.h>
+#include <variant>
+
+
+template <typename U, typename ...T>
+void vis(U& ovr, std::variant<T...> &var) {
+  std::visit(ovr, var);
+}
 int main() {
-  std::packaged_task<int()> task {[] {return 10;}};
-  std::packaged_task<int()> task2 {[] {
-    usleep(1000000);
-    return 1000;}};
+  std::variant<int, double, std::string> var;
+  var = 10;
 
-  ThreadPool pool(2);
+  auto ovr = overload {
+    [](int val) {print("int: ", val);},
+    [](double val) {print("double: ", val);},
+    [](std::string val) {print("string: ", val);},
+  };
+  vis(ovr, var);
+  var = 1.0;
+  vis(ovr, var);
+  var = "test";
+  vis(ovr, var);
 
-  auto fut = pool.push(std::move(task2));
-  auto fut2 = pool.push(std::move(task));
-
-  fut2.wait();
-  std::cout << fut2.get() << std::endl;
-  fut.wait();
-  std::cout << fut.get() << std::endl;
 
 
     /*

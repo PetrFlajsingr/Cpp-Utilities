@@ -6,7 +6,7 @@
 #define UTILITIES_XMLUTILS_H
 #include <meta/string.h>
 #include <string>
-#include <tinyxml2/tinyxml2.h>
+#include <tinyxml2.h>
 
 template <typename T> void to_xml(const T &value, tinyxml2::XMLElement *elem) {
   if constexpr (is_string_v<T>) {
@@ -33,7 +33,7 @@ template <typename T> void from_xml(T &value, tinyxml2::XMLElement *elem) {
       elem->QueryInt64Text(&value);
     }
     if constexpr (std::is_same_v<T, uint64_t>) {
-      elem->QueryUnsigned64Text(&value);
+      // elem->QueryUnsigned64Text(&value); not in fuckin hunter old version...
     }
     if constexpr (std::is_same_v<T, bool>) {
       elem->QueryBoolText(&value);

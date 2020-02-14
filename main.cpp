@@ -119,13 +119,15 @@ void vis(U& ovr, std::variant<T...> &var) {
   std::visit(ovr, var);
 }
 int main() {
+  glm::vec3 vec{1};
+  // print(vec); // TODO: fix for new GLM version...
   std::variant<int, double, std::string> var;
   var = 10;
 
-  auto ovr = overload {
-    [](int val) {print("int: ", val);},
-    [](double val) {print("double: ", val);},
-    [](std::string val) {print("string: ", val);},
+  auto ovr = overload{
+      [](int val) { print("int: ", val); },
+      [](double val) { print("double: ", val); },
+      [](std::string val) { print("string: ", val); },
   };
   vis(ovr, var);
   var = 1.0;

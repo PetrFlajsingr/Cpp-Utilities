@@ -6,10 +6,10 @@
 #define UTILITIES_XMLCONFIG_H
 
 #include "Config.h"
-#include "tinyxml2/tinyxml2.h"
 #include "various/XMLUtils.h"
 #include <io/print.h>
 #include <memory>
+#include <tinyxml2.h>
 #include <vector>
 
 namespace {

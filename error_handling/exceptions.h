@@ -28,21 +28,18 @@ class Exception : public Throwable {
 public:
   explicit Exception(std::string_view msg,
                      std::experimental::source_location srcLoc = std::experimental::source_location::current());
-  ;
 };
 
 class ProgrammingError : public Error {
 public:
   explicit ProgrammingError(std::string_view msg,
                             std::experimental::source_location srcLoc = std::experimental::source_location::current());
-  ;
 };
 
 class InternalError : public Error {
 public:
   explicit InternalError(std::string_view msg,
                          std::experimental::source_location srcLoc = std::experimental::source_location::current());
-  ;
 };
 
 } // namespace exc

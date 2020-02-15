@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 include("cmake/HunterGate.cmake")
+include("cmake/DownloadProject.cmake")
+
 HunterGate(
         URL "https://github.com/cpp-pm/hunter/archive/v0.23.244.tar.gz"
         SHA1 "2c0f491fd0b80f7b09e3d21adb97237161ef9835"
@@ -18,6 +20,14 @@ hunter_add_package(nlohmann_json)
 find_package(nlohmann_json CONFIG REQUIRED)
 hunter_add_package(tinyxml2)
 find_package(tinyxml2 CONFIG REQUIRED)
+
+download_project(PROJ           observable
+        GIT_REPOSITORY https://github.com/ddinu/observable.git
+        GIT_TAG        master
+        )
+
+include_directories(${observable_SOURCE_DIR}/observable/include)
+
 
 include_directories($(CMAKE_SOURCE_DIR))
 include_directories(.)

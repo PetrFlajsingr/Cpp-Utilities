@@ -112,7 +112,7 @@ int main() {
     std::cout << *safeIntAccess << std::endl;
     *safeIntAccess = 10;
     std::cout << *safeIntAccess << std::endl;
-    int test = 10 + safeIntAccess;
+    int test = 10 + *safeIntAccess;
     std::cout << test << std::endl;
   }
 

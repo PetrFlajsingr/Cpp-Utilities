@@ -61,9 +61,6 @@ public:
   Access &operator=(const Access &other) = delete;
   Access &operator=(Access &&other) = delete;
 
-  operator reference_type() { return value; }
-  operator const_reference() const { return value; }
-
   reference_type operator*() noexcept { return value; }
   const_reference operator*() const noexcept { return value; }
   pointer_type operator->() noexcept { return &value; }

@@ -7,16 +7,21 @@
 
 template <typename T, typename Mutex = std::mutex> class Safe final {
 public:
+  enum class AccessType { ReadWrite, ReadOnly };
+
+private:
+  template <typename U = T, AccessType = AccessType::ReadWrite> class Access;
+  using ReadOnlyAccess = Access<T, AccessType::ReadOnly>;
+  using ReadWriteAccess = Access<T, AccessType::ReadWrite>;
+
+public:
   using value_type = T;
   using reference = T &;
   using const_reference = const T &;
   using pointer = T *;
+
   using const_pointer = const T *;
-
-  enum class AccessType { Full, ReadOnly };
-
-  template <typename U = T, AccessType = AccessType::Full> class Access;
-  template <typename... Args> explicit Safe(Args... args) : value(std::forward<Args...>(args)...) {}
+  template <typename... Args> explicit Safe(Args &&... args) : value(std::forward<Args &&...>(args)...) {}
   Safe(const Safe &other) {
     value = other.value;
     mtx = std::mutex{};
@@ -32,14 +37,14 @@ public:
   Safe(Safe &&other) = delete;
   Safe &operator=(Safe &&other) = delete;
 
-  Access<T, AccessType::Full> get() { return Access<T, AccessType::Full>{value, mtx}; }
-  Access<T, AccessType::ReadOnly> get() const { return Access<T, AccessType::ReadOnly>{value, mtx}; }
+  ReadWriteAccess get() { return ReadWriteAccess{value, mtx}; }
+  ReadOnlyAccess get() const { return ReadOnlyAccess{value, mtx}; }
 
-  Access<T, AccessType::Full> writeAccess() { return Access<T, AccessType::Full>{value, mtx}; }
-  Access<T, AccessType::ReadOnly> readOnlyAccess() const { return Access<T, AccessType::ReadOnly>{value, mtx}; }
+  ReadWriteAccess writeAccess() { return ReadWriteAccess{value, mtx}; }
+  ReadOnlyAccess readOnlyAccess() const { return ReadOnlyAccess{value, mtx}; }
 
-  Access<T, AccessType::Full> operator->() { return get(); }
-  Access<T, AccessType::ReadOnly> operator->() const { return get(); }
+  ReadWriteAccess operator->() { return get(); }
+  ReadOnlyAccess operator->() const { return get(); }
 
   reference unsafe() { return value; }
   const_reference unsafe() const { return value; }
@@ -51,8 +56,8 @@ private:
 
 template <typename T, typename Mutex> template <typename U, typename Safe<T, Mutex>::AccessType AccessPolicy>
 class Safe<T, Mutex>::Access {
-  using reference_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::Full, reference, const_reference>;
-  using pointer_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::Full, pointer, const_pointer>;
+  using reference_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::ReadWrite, reference, const_reference>;
+  using pointer_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::ReadWrite, pointer, const_pointer>;
 
 public:
   Access(reference_type value, std::mutex &mtx) : value(value), lck(mtx) {}

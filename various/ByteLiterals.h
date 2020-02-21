@@ -6,7 +6,7 @@
 #define UTILITIES_BYTELITERALS_H
 
 namespace ByteLiterals {
-constexpr auto orderStep = 1024;
+constexpr auto orderStep = 1000;
 constexpr unsigned long long operator"" _B(unsigned long long value) { return value; }
 constexpr unsigned long long operator"" _KB(unsigned long long value) { return value * orderStep; }
 constexpr unsigned long long operator"" _MB(unsigned long long value) { return value * std::pow(orderStep, 2); }

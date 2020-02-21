@@ -22,6 +22,16 @@ public:
 
   template <typename... Args> void operator()(Args... args) { printImpl(stream, args...); }
 };
+
+template <typename OutStream> class CustomStreamOwningPrint {
+  OutStream stream;
+
+public:
+  explicit CustomStreamOwningPrint(OutStream &&stream) : stream(std::move(stream)) {}
+
+  template <typename... Args> void operator()(Args... args) { printImpl(stream, args...); }
+};
+
 } // namespace detail
 template <typename... Args> void print(const Args &... args) {
   detail::printImpl(std::cout, std::forward<const Args &>(args)...);
@@ -34,5 +44,8 @@ template <typename... Args> void printErr(const Args &... args) {
 template <typename... Args> void printFmt(const std::string &fmt, const Args &... args) { fmt::print(fmt + '\n', args...); }
 
 template <typename OutStream> auto make_print(OutStream &stream) { return detail::CustomPrint{stream}; }
+template <typename OutStream> auto make_stream_owning_print(OutStream &&stream) {
+  return detail::CustomStreamOwningPrint{std::forward<OutStream>(stream)};
+}
 
 #endif // UTILITIES_PRINT_H

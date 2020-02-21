@@ -8,6 +8,7 @@
 #include "observable/observable.hpp"
 #include "parallel/ThreadPool.h"
 #include "types/Zip.h"
+#include "various/isin.h"
 #include "various/overload.h"
 #include <iostream>
 #include <parallel/Safe.h>
@@ -106,14 +107,15 @@ template <> void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 template <typename U, typename... T> void vis(U &ovr, std::variant<T...> &var) { std::visit(ovr, var); }
 int main() {
+  constexpr auto a = isIn(10, {1, 2, 3, 4});
   Safe<int> protectedValue;
   {
     auto safeIntAccess = protectedValue.writeAccess();
-    std::cout << *safeIntAccess << std::endl;
+    print(*safeIntAccess);
     *safeIntAccess = 10;
-    std::cout << *safeIntAccess << std::endl;
+    print(*safeIntAccess);
     int test = 10 + *safeIntAccess;
-    std::cout << test << std::endl;
+    print(test);
   }
 
   glm::vec3 vec{1};

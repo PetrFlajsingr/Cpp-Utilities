@@ -7,12 +7,11 @@
 
 #include "glm/glm.hpp"
 
-template <class T, template <class, glm::precision> class Template> struct is_vec_specialization : std::false_type {};
-template <template <class, glm::precision> class Template, typename ValueType, glm::precision P>
-struct is_vec_specialization<Template<ValueType, P>, Template> : std::true_type {};
+template <class T, template <int, class, glm::qualifier> class Template> struct is_vec_specialization : std::false_type {};
 
-template <typename T> constexpr bool is_vec_specialisation_v = is_vec_specialization<std::decay_t<T>, glm::tvec4>::value ||
-                                                               is_vec_specialization<std::decay_t<T>, glm::tvec3>::value ||
-                                                               is_vec_specialization<std::decay_t<T>, glm::tvec2>::value;
+template <template <int, class, glm::qualifier> class Template, int L, class T, glm::qualifier Q>
+struct is_vec_specialization<Template<L, T, Q>, Template> : std::true_type {};
+
+template <typename T> constexpr bool is_vec_specialisation_v = is_vec_specialization<std::decay_t<T>, glm::vec>::value;
 
 #endif // UTILITIES_GLM_H

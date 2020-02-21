@@ -120,7 +120,7 @@ void vis(U& ovr, std::variant<T...> &var) {
 }
 int main() {
   glm::vec3 vec{1};
-  // print(vec); // TODO: fix for new GLM version...
+  print(vec); // TODO: fix for new GLM version...
   std::variant<int, double, std::string> var;
   var = 10;
 

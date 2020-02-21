@@ -106,11 +106,11 @@ template <> void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 template <typename U, typename... T> void vis(U &ovr, std::variant<T...> &var) { std::visit(ovr, var); }
 int main() {
-  const Safe<int> protectedValue;
+  Safe<int> protectedValue;
   {
-    auto safeIntAccess = protectedValue.get();
+    auto safeIntAccess = protectedValue.readOnlyAccess();
     std::cout << *safeIntAccess << std::endl;
-    //*safeIntAccess = 10;
+    *safeIntAccess = 10;
     std::cout << *safeIntAccess << std::endl;
     int test = 10 + safeIntAccess;
     std::cout << test << std::endl;

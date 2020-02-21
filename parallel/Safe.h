@@ -5,7 +5,7 @@
 #ifndef UTILITIES_SAFE_H
 #define UTILITIES_SAFE_H
 
-template <typename T> class Safe final {
+template <typename T, typename Mutex = std::mutex> class Safe final {
 public:
   using value_type = T;
   using reference = T &;
@@ -35,6 +35,9 @@ public:
   Access<T, AccessType::Full> get() { return Access<T, AccessType::Full>{value, mtx}; }
   Access<T, AccessType::ReadOnly> get() const { return Access<T, AccessType::ReadOnly>{value, mtx}; }
 
+  Access<T, AccessType::Full> writeAccess() { return Access<T, AccessType::Full>{value, mtx}; }
+  Access<T, AccessType::ReadOnly> readOnlyAccess() const { return Access<T, AccessType::ReadOnly>{value, mtx}; }
+
   Access<T, AccessType::Full> operator->() { return get(); }
   Access<T, AccessType::ReadOnly> operator->() const { return get(); }
 
@@ -42,11 +45,12 @@ public:
   const_reference unsafe() const { return value; }
 
 private:
-  mutable std::mutex mtx;
+  mutable Mutex mtx;
   value_type value;
 };
 
-template <typename T> template <typename U, typename Safe<T>::AccessType AccessPolicy> class Safe<T>::Access {
+template <typename T, typename Mutex> template <typename U, typename Safe<T, Mutex>::AccessType AccessPolicy>
+class Safe<T, Mutex>::Access {
   using reference_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::Full, reference, const_reference>;
   using pointer_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::Full, pointer, const_pointer>;
 

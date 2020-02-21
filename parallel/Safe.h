@@ -49,10 +49,6 @@ public:
   Access &operator=(const Access &other) = delete;
   Access &operator=(Access &&other) = delete;
 
-  Access &operator=(const T &other) {
-    value = other;
-    return *this;
-  }
   operator reference() { return value; }
   operator const_reference() const { return value; }
 

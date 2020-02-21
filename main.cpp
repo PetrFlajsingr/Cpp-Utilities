@@ -14,6 +14,7 @@
 #include <parallel/Safe.h>
 #include <utility>
 #include <variant>
+#include <various/ByteLiterals.h>
 
 using String = StringDecorator<std::string>;
 
@@ -107,7 +108,9 @@ template <> void from_xml<Button>(Button &value, tinyxml2::XMLElement *elem) {
 
 template <typename U, typename... T> void vis(U &ovr, std::variant<T...> &var) { std::visit(ovr, var); }
 int main() {
-  constexpr auto a = isIn(10, {1, 2, 3, 4});
+  using namespace ByteLiterals;
+  auto a = 1_GiB;
+  print("A: ", a);
   Safe<int> protectedValue;
   {
     auto safeIntAccess = protectedValue.writeAccess();

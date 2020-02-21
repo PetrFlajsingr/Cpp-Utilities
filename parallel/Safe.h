@@ -36,6 +36,9 @@ public:
   Access operator->() { return get(); }
   const Access operator->() const { return get(); }
 
+  reference unsafe() { return value; }
+  const_reference unsafe() const { return value; }
+
 private:
   std::mutex mtx;
   value_type value;

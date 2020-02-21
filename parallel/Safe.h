@@ -10,9 +10,9 @@ public:
   enum class AccessType { ReadWrite, ReadOnly };
 
 private:
-  template <typename U = T, AccessType = AccessType::ReadWrite> class Access;
-  using ReadOnlyAccess = Access<T, AccessType::ReadOnly>;
-  using ReadWriteAccess = Access<T, AccessType::ReadWrite>;
+  template <AccessType = AccessType::ReadWrite> class Access;
+  using ReadOnlyAccess = Access<AccessType::ReadOnly>;
+  using ReadWriteAccess = Access<AccessType::ReadWrite>;
 
 public:
   using value_type = T;
@@ -56,8 +56,7 @@ private:
   value_type value;
 };
 
-template <typename T, typename Mutex> template <typename U, typename Safe<T, Mutex>::AccessType AccessPolicy>
-class Safe<T, Mutex>::Access {
+template <typename T, typename Mutex> template <typename Safe<T, Mutex>::AccessType AccessPolicy> class Safe<T, Mutex>::Access {
   using reference_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::ReadWrite, reference, const_reference>;
   using pointer_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::ReadWrite, pointer, const_pointer>;
 

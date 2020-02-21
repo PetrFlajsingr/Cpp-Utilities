@@ -108,7 +108,7 @@ template <typename U, typename... T> void vis(U &ovr, std::variant<T...> &var) {
 int main() {
   Safe<int> protectedValue;
   {
-    auto safeIntAccess = protectedValue.readOnlyAccess();
+    auto safeIntAccess = protectedValue.writeAccess();
     std::cout << *safeIntAccess << std::endl;
     *safeIntAccess = 10;
     std::cout << *safeIntAccess << std::endl;

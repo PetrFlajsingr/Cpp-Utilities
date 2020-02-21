@@ -13,7 +13,9 @@ public:
   using pointer = T *;
   using const_pointer = const T *;
 
-  class Access;
+  enum class AccessType { Full, ReadOnly };
+
+  template <typename U = T, AccessType = AccessType::Full> class Access;
   template <typename... Args> explicit Safe(Args... args) : value(std::forward<Args...>(args)...) {}
   Safe(const Safe &other) {
     value = other.value;
@@ -30,38 +32,41 @@ public:
   Safe(Safe &&other) = delete;
   Safe &operator=(Safe &&other) = delete;
 
-  Access get() { return Access{value, mtx}; }
-  const Access get() const { return Access{value, mtx}; }
+  Access<T, AccessType::Full> get() { return Access<T, AccessType::Full>{value, mtx}; }
+  Access<T, AccessType::ReadOnly> get() const { return Access<T, AccessType::ReadOnly>{value, mtx}; }
 
-  Access operator->() { return get(); }
-  const Access operator->() const { return get(); }
+  Access<T, AccessType::Full> operator->() { return get(); }
+  Access<T, AccessType::ReadOnly> operator->() const { return get(); }
 
   reference unsafe() { return value; }
   const_reference unsafe() const { return value; }
 
 private:
-  std::mutex mtx;
+  mutable std::mutex mtx;
   value_type value;
 };
 
-template <typename T> class Safe<T>::Access {
+template <typename T> template <typename U, typename Safe<T>::AccessType AccessPolicy> class Safe<T>::Access {
+  using reference_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::Full, reference, const_reference>;
+  using pointer_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::Full, pointer, const_pointer>;
+
 public:
-  Access(T &value, std::mutex &mtx) : value(value), lck(mtx) {}
+  Access(reference_type value, std::mutex &mtx) : value(value), lck(mtx) {}
   Access(const Access &other) = delete;
   Access(Access &&other) = delete;
   Access &operator=(const Access &other) = delete;
   Access &operator=(Access &&other) = delete;
 
-  operator reference() { return value; }
+  operator reference_type() { return value; }
   operator const_reference() const { return value; }
 
-  reference operator*() noexcept { return value; }
+  reference_type operator*() noexcept { return value; }
   const_reference operator*() const noexcept { return value; }
-  pointer operator->() noexcept { return &value; }
+  pointer_type operator->() noexcept { return &value; }
   const_pointer operator->() const noexcept { return &value; }
 
 private:
-  reference value;
+  reference_type value;
   std::unique_lock<std::mutex> lck;
 };
 

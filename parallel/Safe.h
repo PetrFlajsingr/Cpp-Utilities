@@ -19,9 +19,11 @@ public:
   using reference = T &;
   using const_reference = const T &;
   using pointer = T *;
-
   using const_pointer = const T *;
+
   template <typename... Args> explicit Safe(Args &&... args) : value(std::forward<Args &&...>(args)...) {}
+  template <typename... Args> explicit Safe(Mutex &&mtx, Args &&... args)
+      : mtx(std::move(mtx)), value(std::forward<Args &&...>(args)...) {}
   Safe(const Safe &other) {
     value = other.value;
     mtx = std::mutex{};

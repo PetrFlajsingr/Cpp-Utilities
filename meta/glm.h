@@ -5,7 +5,7 @@
 #ifndef UTILITIES_GLM_H
 #define UTILITIES_GLM_H
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 
 template <class T, template <int, class, glm::qualifier> class Template> struct is_vec_specialization : std::false_type {};
 

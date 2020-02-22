@@ -5,6 +5,8 @@
 #ifndef UTILITIES_SAFE_H
 #define UTILITIES_SAFE_H
 
+#include <mutex>
+
 template <typename T, typename Mutex = std::mutex> class Safe final {
 public:
   enum class AccessType { ReadWrite, ReadOnly };

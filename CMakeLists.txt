@@ -9,8 +9,8 @@ HunterGate(
 
 project(Utilities)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_STANDARD 20)
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
 hunter_add_package(fmt)
 find_package(fmt CONFIG REQUIRED)
@@ -25,25 +25,16 @@ download_project(PROJ           observable
         GIT_REPOSITORY https://github.com/ddinu/observable.git
         GIT_TAG        master
         )
-
 include_directories(${observable_SOURCE_DIR}/observable/include)
 
 
-include_directories($(CMAKE_SOURCE_DIR))
-include_directories(.)
-include_directories(t/)
-
-#find_package(glm REQUIRED)
-#include_directories(${GLM_INCLUDE_DIRS})
-add_executable(main main.cpp
-        various/XMLUtils.cpp
-        #error_handling/exceptions.cpp
-        graphics/Geometry.cpp
-        graphics/ViewFrustum.cpp
-        time/FPSCounter.cpp
-        error_handling/exceptions.cpp
-        various/XMLSerialisation.h config/XmlConfig.tpp reactive/Binding.h reactive/OneWayBinding.h reactive/TwoWayBinding.h containers/Tree.h parallel/ThreadPool.h parallel/SafeQueue.h)
-
-target_link_libraries(main fmt::fmt-header-only -pthread nlohmann_json::nlohmann_json tinyxml2)
-
-#target_link_libraries(main -pthread)
+#add_executable(main main.cpp
+#        various/XMLUtils.cpp
+#        #error_handling/exceptions.cpp
+#        graphics/Geometry.cpp
+#        graphics/ViewFrustum.cpp
+#        time/FPSCounter.cpp
+#        error_handling/exceptions.cpp
+#        various/XMLSerialisation.h config/XmlConfig.tpp reactive/Binding.h reactive/OneWayBinding.h reactive/TwoWayBinding.h containers/Tree.h parallel/ThreadPool.h parallel/SafeQueue.h)
+#
+#target_link_libraries(main fmt::fmt-header-only -pthread nlohmann_json::nlohmann_json tinyxml2)

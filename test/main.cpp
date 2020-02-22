@@ -2,19 +2,19 @@
 // Created by Petr on 18.11.2019.
 //
 
-#include "config/JsonConfig.h"
-#include "config/XmlConfig.h"
-#include "containers/Tree.h"
+#include "../config/JsonConfig.h"
+#include "../config/XmlConfig.h"
+#include "../containers/Tree.h"
+#include "../parallel/Safe.h"
+#include "../parallel/ThreadPool.h"
+#include "../types/Zip.h"
+#include "../various/ByteLiterals.h"
+#include "../various/isin.h"
+#include "../various/overload.h"
 #include "observable/observable.hpp"
-#include "parallel/ThreadPool.h"
-#include "types/Zip.h"
-#include "various/isin.h"
-#include "various/overload.h"
 #include <iostream>
-#include <parallel/Safe.h>
 #include <utility>
 #include <variant>
-#include <various/ByteLiterals.h>
 
 using String = StringDecorator<std::string>;
 

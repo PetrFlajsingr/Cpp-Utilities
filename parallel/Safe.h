@@ -10,9 +10,9 @@
 template <typename T, typename Mutex = std::mutex> class Safe final {
 public:
   enum class AccessType { ReadWrite, ReadOnly };
+  template <AccessType = AccessType::ReadWrite> class Access;
 
 private:
-  template <AccessType = AccessType::ReadWrite> class Access;
   using ReadOnlyAccess = Access<AccessType::ReadOnly>;
   using ReadWriteAccess = Access<AccessType::ReadWrite>;
 
@@ -58,12 +58,14 @@ private:
   value_type value;
 };
 
-template <typename T, typename Mutex> template <typename Safe<T, Mutex>::AccessType AccessPolicy> class Safe<T, Mutex>::Access {
+template <typename T, typename Mutex> template <typename Safe<T, Mutex>::AccessType AccessPolicy>
+class Safe<T, Mutex>::Access final {
   using reference_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::ReadWrite, reference, const_reference>;
   using pointer_type = std::conditional_t<AccessPolicy == Safe<T>::AccessType::ReadWrite, pointer, const_pointer>;
 
 public:
-  Access(reference_type value, std::mutex &mtx) : value(value), lck(mtx) {}
+  Access(reference_type value, Mutex &mtx) : value(value), lck(mtx) {}
+  Access(Safe<T, Mutex> &safe) : Access(safe.value, safe.mtx) {}
   Access(const Access &other) = delete;
   Access(Access &&other) = delete;
   Access &operator=(const Access &other) = delete;
@@ -76,7 +78,13 @@ public:
 
 private:
   reference_type value;
-  std::unique_lock<std::mutex> lck;
+  std::unique_lock<Mutex> lck;
 };
+
+template <typename T, typename Mutex = std::mutex> using ReadOnlyAccess =
+    typename Safe<T, Mutex>::template Access<Safe<T, Mutex>::AccessType::ReadOnly>;
+
+template <typename T, typename Mutex = std::mutex> using WriteAccess =
+    typename Safe<T, Mutex>::template Access<Safe<T, Mutex>::AccessType::ReadWrite>;
 
 #endif // UTILITIES_SAFE_H
